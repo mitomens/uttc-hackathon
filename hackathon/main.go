@@ -36,7 +36,6 @@ type PersonId struct {
 var db *sql.DB
 
 func init() {
-	// ①-1
 	err := godotenv.Load("../../mysql/.env_mysql")
 	if err != nil {
 		fmt.Printf("読み込み出来ませんでした: %v", err)
