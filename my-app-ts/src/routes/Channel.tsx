@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import "./Channel.css";
 
 
+
 //チャンネルごとに叩くデータベースを変える
 //チャンネル名を一番上に書く
 function Channel() {
