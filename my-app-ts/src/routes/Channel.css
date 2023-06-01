@@ -14,7 +14,7 @@
 
   .main-container{
     display: flex;
-    flex-direction: colimn;
+    flex-direction: column;
     min-height: 100%;
   }
 
