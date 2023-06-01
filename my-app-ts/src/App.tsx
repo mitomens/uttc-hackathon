@@ -1,26 +1,84 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
+import Home from "./routes/Home";
+import Editprof from "./routes/Editprof";
+import Channel from "./routes/Channel";
 
-function App() {
+const mockdata = [
+  { label: 'Channel1', icon: '📊' },
+  { label: 'Channel2', icon: '🗞️'},
+  { label: 'Channel3', icon: '📅'},
+  { label: 'Channel4', icon: '📈' },
+  { label: 'Channel5', icon: '📄' },
+  { label: 'Channel6', icon: '⚙️' },
+  { label: 'Channel7', icon: '🔒'},
+];
+
+const Sidebar = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <nav style={{ width: '300px', height: '800px', padding: '16px', backgroundColor: '#FFF' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #CCC' }}>
+        <h1 style={{ fontSize: '40px' }}>Slack</h1>
+        <span style={{ fontWeight: '700' }}>v3.1.2</span>
+        <ul>
+        <li>
+          <Link to="/">Home</Link>
+        </li>
+        </ul>
+      </div>
+      <div style={{ flexGrow: 1, overflowY: 'scroll', paddingTop: '32px', paddingBottom: '32px' }}>
+        {mockdata.map((item) => (
+          <ul>
+          <li>
+          <Link to="/channel">
+            <div>
+              <h2 style={{ display: 'flex', alignItems: 'center' }}>
+                <span style={{ marginRight: '8px' }}>{item.icon}</span>
+                {item.label}
+              </h2>
+            </div>
+          </Link>
+          </li>
+          </ul>
+        ))}
+      </div>
+      <ul>
+      <li>
+      <Link to="/edit-profile">
+        <div style={{ borderTop: '1px solid #CCC' }}>
+          <img
+            src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80"
+            alt="Keito"
+            style={{ width: '50px', height: '50px', borderRadius: '25px' }}
+          />
+          <p>Name</p>
+          <p>gmail</p>
+        </div>
+      </Link>
+      </li>
+      </ul>
+    </nav>
   );
 }
 
-export default App;
+
+function Main() {
+  return (
+    <BrowserRouter> 
+      <div className="Main" style={{display: 'flex'}}>
+        <Sidebar />
+          <div style={{width: '100%'}}>
+          <Routes >
+            <Route path="/" element={<Home />}/>{/*main画面*/}
+            <Route path="/edit-profile" element={<Editprof />}/>{/*プロフィール編集画面*/}
+            {/*<Route path="/:channelId">*/}
+            <Route path="/channel" element={<Channel />}/>{/*チャンネル画面*/}
+          </Routes>
+          </div>
+      </div>
+    </BrowserRouter>
+  );
+}
+
+export default Main;
+

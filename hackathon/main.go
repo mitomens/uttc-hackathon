@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/joho/godotenv"
 	ulid "github.com/oklog/ulid/v2"
 	"log"
 	"math/rand"
@@ -18,14 +17,14 @@ import (
 )
 
 type UserResForHTTPGet struct {
-	Id   string `json:"id"`
-	Name string `json:"name"`
-	Age  int    `json:"age"`
+	Id      string `json:"id"`
+	Name    string `json:"name"`
+	Comment string `json:"comment"`
 }
 
 type UserPost struct {
-	Name string `json:"name"`
-	Age  int    `json:"age"`
+	Name    string `json:"name"`
+	Comment string `json:"comment"`
 }
 
 type PersonId struct {
@@ -36,18 +35,14 @@ type PersonId struct {
 var db *sql.DB
 
 func init() {
-	err := godotenv.Load("../../mysql/.env_mysql")
-	if err != nil {
-		fmt.Printf("読み込み出来ませんでした: %v", err)
-	}
-	    // DB接続のための準備
-        mysqlUser := os.Getenv("MYSQL_USER")
-        mysqlPwd := os.Getenv("MYSQL_PWD")
-        mysqlHost := os.Getenv("MYSQL_HOST")
-        mysqlDatabase := os.Getenv("MYSQL_DATABASE")
+	// DB接続のための準備
+	mysqlUser := os.Getenv("MYSQL_USER")
+	mysqlPassword := os.Getenv("MYSQL_PASSWORD")
+	mysqlHost := os.Getenv("MYSQL_HOST")
+	mysqlDatabase := os.Getenv("MYSQL_DATABASE")
 
-        connStr := fmt.Sprintf("%s:%s@%s/%s", mysqlUser, mysqlPwd, mysqlHost, mysqlDatabase)
-        db, err := sql.Open("mysql", connStr)
+	connStr := fmt.Sprintf("%s:%s@%s/%s", mysqlUser, mysqlPassword, mysqlHost, mysqlDatabase)
+	_db, err := sql.Open("mysql", connStr)
 	if err != nil {
 		log.Fatalf("fail: sql.Open, %v\n", err)
 	}
@@ -72,7 +67,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// ②-2
-		rows, err := db.Query("SELECT id, name, age FROM user WHERE name = ?", name)
+		rows, err := db.Query("SELECT id, name, comment FROM comment WHERE name = ?", name)
 		if err != nil {
 			log.Printf("fail: db.Query, %v\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -83,7 +78,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 		users := make([]UserResForHTTPGet, 0)
 		for rows.Next() {
 			var u UserResForHTTPGet
-			if err := rows.Scan(&u.Id, &u.Name, &u.Age); err != nil {
+			if err := rows.Scan(&u.Id, &u.Name, &u.Comment); err != nil {
 				log.Printf("fail: rows.Scan, %v\n", err)
 
 				if err := rows.Close(); err != nil { // 500を返して終了するが、その前にrowsのClose処理が必要
@@ -107,7 +102,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 	case http.MethodPost:
 		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:56878")
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
@@ -127,11 +122,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			log.Printf("fail: json.Decoder.Decode, %v\n", err)
 			return
 		}
-		if body.Age < 20 || body.Age > 80 {
-			w.WriteHeader(http.StatusBadRequest)
-			log.Printf("fail: Agerange, %v\n", err)
-			return
-		}
+
 		if body.Name == "" {
 			w.WriteHeader(http.StatusBadRequest)
 			log.Printf("fail: Name, %v\n", err)
@@ -143,8 +134,8 @@ func handler(w http.ResponseWriter, r *http.Request) {
 			log.Printf("fail: Begin, %v\n", err)
 			return
 		}
-		query := "INSERT INTO user(id, name, age) VALUE(?, ?, ?)"
-		_, er := tx.Exec(query, Id.String(), body.Name, body.Age)
+		query := "INSERT INTO comment(id, name, comment) VALUE(?, ?, ?)"
+		_, er := tx.Exec(query, Id.String(), body.Name, body.Comment)
 		if er != nil {
 			tx.Rollback()
 			if err := tx.Rollback(); err != nil {
@@ -187,12 +178,12 @@ func handler2(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:56878")
+		w.Header().Set("Access-Control-Allow-Origin", "http://localhost:3000")
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 		// ②-2
-		rows, err := db.Query("SELECT id, name, age FROM user ")
+		rows, err := db.Query("SELECT id, name, comment FROM comment ")
 		if err != nil {
 			log.Printf("fail: db.Query, %v\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -203,7 +194,7 @@ func handler2(w http.ResponseWriter, r *http.Request) {
 		users := make([]UserResForHTTPGet, 0)
 		for rows.Next() {
 			var u UserResForHTTPGet
-			if err := rows.Scan(&u.Id, &u.Name, &u.Age); err != nil {
+			if err := rows.Scan(&u.Id, &u.Name, &u.Comment); err != nil {
 				log.Printf("fail: rows.Scan, %v\n", err)
 
 				if err := rows.Close(); err != nil { // 500を返して終了するが、その前にrowsのClose処理が必要
