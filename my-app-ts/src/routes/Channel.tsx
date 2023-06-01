@@ -10,7 +10,6 @@ function Channel() {
     id: string;
     name: string;
     comment: string;
-    good: number;
   };
 
   const [name, setName] = useState<string>("");
@@ -70,7 +69,6 @@ function Channel() {
         <div className="item" key={user.id}>
           <p>{user.name}</p>
           <p>{user.comment}</p>
-          <p>{user.good}</p>
           <p>reply</p>{/*ここに返信ボタンを作る*/}
           <p>edit</p>{/*ここに編集ボタンを作る*/}
         </div>
