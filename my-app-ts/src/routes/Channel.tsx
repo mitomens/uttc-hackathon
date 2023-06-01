@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Channel.css";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPaperPlane } from '@fortawesome/free-solid-svg-icons'
 
 
 //チャンネルごとに叩くデータベースを変える
@@ -92,7 +94,7 @@ function Channel() {
             value={comment}
             onChange={(e) => setComment(e.target.value)}
         ></input>
-        <button type={"submit"}>send</button>
+        <button type={"submit"}><FontAwesomeIcon icon={faPaperPlane} /></button>
       </form>
       </div>
     </div>
