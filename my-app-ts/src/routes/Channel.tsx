@@ -20,7 +20,7 @@ function Channel() {
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch("http://localhost:8000/users");
+      const res = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/users");
       if (!res.ok) {
         throw Error(`Failed to fetch users: ${res.status}`);
       }
@@ -38,16 +38,17 @@ function Channel() {
 
 
     try {
-      const result = await fetch("http://localhost:8000/user", {
+      const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/user", {
         method: "POST",
         body: JSON.stringify({
+            name: name,
             comment: comment,
         }),
       });
       if (!result.ok) {
         throw Error(`Failed to create user: ${result.status}`);
       }
-
+      setName("");
       setComment("");
       fetchUsers();//ここで再度データを取得している
       console.log(result);
