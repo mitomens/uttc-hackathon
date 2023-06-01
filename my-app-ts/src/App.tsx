@@ -47,7 +47,7 @@ const Sidebar = () => {
       <Link to="/edit-profile">
         <div style={{ borderTop: '1px solid #CCC' }}>
           <img
-            src="https://pbs.twimg.com/profile_images/1411037878399121920/0ZzX3y8-_400x400.jpg"
+            src="https://images.unsplash.com/photo-1508214751196-bcfd4ca60f91?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=255&q=80"
             alt="Keito"
             style={{ width: '50px', height: '50px', borderRadius: '25px' }}
           />
