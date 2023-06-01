@@ -47,7 +47,7 @@ const Sidebar = () => {
       <Link to="/edit-profile">
         <div style={{ borderTop: '1px solid #CCC' }}>
           <img
-            src="https://www.google.com/imgres?imgurl=https%3A%2F%2Fpbs.twimg.com%2Fprofile_images%2F1490531496394104835%2FwVwvKArD_400x400.jpg&tbnid=q2kBPAlQpjUEMM&vet=12ahUKEwi16Kq3mqL_AhVU-mEKHVpMDQMQMygAegUIARC5AQ..i&imgrefurl=https%3A%2F%2Ftwitter.com%2Finiesta_japan&docid=iNRVXd5P2znZ_M&w=400&h=400&q=イニエスタの画像%20https&client=safari&ved=2ahUKEwi16Kq3mqL_AhVU-mEKHVpMDQMQMygAegUIARC5AQ"
+            src="https://pbs.twimg.com/profile_images/1411037878399121920/0ZzX3y8-_400x400.jpg"
             alt="Keito"
             style={{ width: '50px', height: '50px', borderRadius: '25px' }}
           />
