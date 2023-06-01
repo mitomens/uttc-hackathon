@@ -65,6 +65,7 @@ function Channel() {
       <header className = "header">ChennelName</header>
       <div>
       <ul className = "container">
+        <div>Hello</div>
       {users.map((user) => (
         <div className="item" key={user.id}>
           <p>{user.name}</p>
