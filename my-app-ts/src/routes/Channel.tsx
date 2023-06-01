@@ -13,6 +13,7 @@ function Channel() {
     good: number;
   };
 
+  const [name, setName] = useState<string>("");
   const [comment, setComment] = useState<string>("");
   const [users, setUsers] = useState<User[]>([]);
 
@@ -80,6 +81,12 @@ function Channel() {
       </div>
       <div className = 'comment-container'>
       <form style={{ display: "flex", flexDirection: "column" }} onSubmit={onSubmit}>
+        <label>Name: </label>
+        <input 
+            type={"text"}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+        ></input>
         <label>Comment: </label>
         <input
             type={"text"}
