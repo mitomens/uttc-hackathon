@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "./Channel.css";
+import { fireAuth } from "../firebase";
+
+import { onAuthStateChanged } from "firebase/auth";
 
 
 
@@ -13,7 +16,13 @@ function Channel() {
     comment: string;
   };
 
-  const [name, setName] = useState<string>("");
+  const [loginUser, setLoginUser] = useState(fireAuth.currentUser);
+  
+  // ログイン状態を監視して、stateをリアルタイムで更新する
+  onAuthStateChanged(fireAuth, user => {
+    setLoginUser(user);
+  });
+
   const [comment, setComment] = useState<string>("");
   const [users, setUsers] = useState<User[]>([]);
 
@@ -41,14 +50,14 @@ function Channel() {
       const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/user", {
         method: "POST",
         body: JSON.stringify({
-            name: name,
+            name: loginUser?.displayName,
             comment: comment,
         }),
       });
       if (!result.ok) {
         throw Error(`Failed to create user: ${result.status}`);
       }
-      setName("");
+
       setComment("");
       fetchUsers();//ここで再度データを取得している
       console.log(result);
@@ -81,12 +90,6 @@ function Channel() {
       </div>
       <div className = 'comment-container'>
       <form style={{ display: "flex", flexDirection: "column" }} onSubmit={onSubmit}>
-        <label>Name: </label>
-        <input 
-            type={"text"}
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-        ></input>
         <label>Comment: </label>
         <input
             type={"text"}
