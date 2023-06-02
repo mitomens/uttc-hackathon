@@ -1,25 +1,32 @@
-import React from "react";
+import React ,{ FC, useState, useEffect }from "react";
 import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
-import Home from "./routes/Home";
+import Login from "./routes/Login";
 import Editprof from "./routes/Editprof";
 import Channel from "./routes/Channel";
+import { fireAuth } from "./firebase";
+import { signInWithPopup, GoogleAuthProvider, signOut ,AuthError, UserCredential, onAuthStateChanged } from "firebase/auth";
 
 const mockdata = [
   { label: 'Channel1', icon: '📊' },
-  { label: 'Channel2', icon: '🗞️'},
-  { label: 'Channel3', icon: '📅'},
+  { label: 'Channel2', icon: '🗞️' },
+  { label: 'Channel3', icon: '📅' },
   { label: 'Channel4', icon: '📈' },
   { label: 'Channel5', icon: '📄' },
-  { label: 'Channel6', icon: '⚙️' },
-  { label: 'Channel7', icon: '🔒'},
 ];
 
+
 const Sidebar = () => {
+  const [loginUser, setLoginUser] = useState(fireAuth.currentUser);
+  
+  // ログイン状態を監視して、stateをリアルタイムで更新する
+  onAuthStateChanged(fireAuth, user => {
+    setLoginUser(user);
+  });
   return (
     <nav style={{ width: '300px', height: '800px', padding: '16px', backgroundColor: '#FFF' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #CCC' }}>
-        <h1 style={{ fontSize: '40px' }}>Slack</h1>
-        <span style={{ fontWeight: '700' }}>v3.1.2</span>
+        <h1 style={{ fontSize: '50px' }}>Slack</h1>
+        <span style={{ fontWeight: '700' }}>v4.3.2</span>
         <ul>
         <li>
           <Link to="/">Log in</Link>
@@ -51,8 +58,8 @@ const Sidebar = () => {
             alt="Keito"
             style={{ width: '50px', height: '50px', borderRadius: '25px' }}
           />
-          <p>Name</p>
-          <p>gmail</p>
+          <p>{loginUser?.displayName}</p> {/* ログインユーザー名 */}
+          <p>{loginUser?.email}</p> {/* ログインメール */}
         </div>
       </Link>
       </li>
@@ -69,7 +76,7 @@ function Main() {
         <Sidebar />
           <div style={{width: '100%'}}>
           <Routes >
-            <Route path="/" element={<Home />}/>{/*main画面*/}
+            <Route path="/" element={<Login />}/>{/*Login画面*/}
             <Route path="/edit-profile" element={<Editprof />}/>{/*プロフィール編集画面*/}
             {/*<Route path="/:channelId">*/}
             <Route path="/channel" element={<Channel />}/>{/*チャンネル画面*/}
