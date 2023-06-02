@@ -2,41 +2,6 @@ import { signInWithPopup, GoogleAuthProvider, signOut, AuthError, UserCredential
 import { fireAuth } from "../firebase";
 import React, { FC, useState } from 'react';
 
-export const LoginUser: FC = () => {
-    const [loginUser, setLoginUser] = useState(fireAuth.currentUser);
-    
-    // ログイン状態を監視して、stateをリアルタイムで更新する
-    onAuthStateChanged(fireAuth, user => {
-        setLoginUser(user);
-    });
-    
-    return (
-        <div>
-        <h1>ログインユーザー: {loginUser?.displayName}</h1>
-        <h1>ログインユーザー: {loginUser?.email}</h1>
-        <h1>ログインユーザー: {loginUser?.uid}</h1>
-        </div>
-    );
-};
-
-const App = () => {
-  // stateとしてログイン状態を管理する。ログインしていないときはnullになる。
-  const [loginUser, setLoginUser] = useState(fireAuth.currentUser);
-  
-  // ログイン状態を監視して、stateをリアルタイムで更新する
-  onAuthStateChanged(fireAuth, user => {
-    setLoginUser(user);
-  });
-  
-  return (
-    <>
-      <LoginForm />
-      {/* ログインしていないと見られないコンテンツは、loginUserがnullの場合表示しない */}
-      {loginUser ? <LoginUser /> : null}
-    </>
-  );
-};
-
 export const LoginForm: FC = () => {
   /**
    * googleでログインする
@@ -80,13 +45,15 @@ export const LoginForm: FC = () => {
   );
 };
 
-function Home(){
+
+
+function Login(){
     return (
         <div>
         <h1>ログイン</h1>
-        <App />
+        <LoginForm />
         </div>
     );
 }
 
-export default Home;
+export default Login;
