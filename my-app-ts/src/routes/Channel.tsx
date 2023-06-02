@@ -19,10 +19,14 @@ function Channel() {
   const [loginUser, setLoginUser] = useState(fireAuth.currentUser);
   
   // ログイン状態を監視して、stateをリアルタイムで更新する
-  onAuthStateChanged(fireAuth, user => {
-    setLoginUser(user);
-  });
-
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(fireAuth, user => {
+      setLoginUser(user);
+    });
+    
+    return unsubscribe; // Unsubscribe on component unmount
+  }, []);
+  
   const [comment, setComment] = useState<string>("");
   const [users, setUsers] = useState<User[]>([]);
 
