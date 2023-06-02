@@ -22,7 +22,7 @@ const Sidebar = () => {
         <span style={{ fontWeight: '700' }}>v3.1.2</span>
         <ul>
         <li>
-          <Link to="/">Home</Link>
+          <Link to="/">Log in</Link>
         </li>
         </ul>
       </div>
