@@ -118,7 +118,7 @@ function Channel() {
         <div className="item" key={comment.id}>
           <p>user:{comment.username}</p>
           <p>comment:{comment.comment}</p>
-          <p>{comment.id}</p>
+          <p>{goods}</p>
           <button
             onClick={() => {
                 fetchGood(comment.id);
