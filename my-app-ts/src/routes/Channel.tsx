@@ -86,8 +86,8 @@ function Channel() {
             if (!res.ok) {
                 throw Error(`Failed to fetch users: ${res.status}`);
             }
-            const good = await res.json();
-            const good2:Good = good.good + 1;
+            const good:Good = await res.json();
+            const good2:number = good.good + 1;
             console.log(good);
             const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/good", {
                 method: "POST",
