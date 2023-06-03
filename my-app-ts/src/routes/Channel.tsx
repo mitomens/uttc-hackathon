@@ -59,7 +59,7 @@ function Channel() {
         body: JSON.stringify({
             channelid: "00000000000000000000000001",
             userid: loginUser?.uid,
-            name: loginUser?.displayName,
+            username: loginUser?.displayName,
             comment: comment,
         }),
       });
