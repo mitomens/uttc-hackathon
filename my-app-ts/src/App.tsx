@@ -1,6 +1,7 @@
 import React ,{ FC, useState, useEffect }from "react";
-import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
+import { BrowserRouter, Route, Routes, Link, Navigate } from 'react-router-dom';
 import Login from "./routes/Login";
+import YetLogin from "./routes/YetLogin";
 import Editprof from "./routes/Editprof";
 import Channel from "./routes/Channel";
 import Channel2 from "./routes/Channel2";
@@ -95,6 +96,16 @@ const Sidebar = () => {
 
 
 function Main() {
+  const [loginUser, setLoginUser] = useState(fireAuth.currentUser);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(fireAuth, user => {
+      setLoginUser(user);
+    });
+
+    return unsubscribe; // Unsubscribe on component unmount
+  }, []);
+
   return (
     <BrowserRouter> 
       <div className="Main" style={{display: 'flex'}}>
@@ -102,9 +113,10 @@ function Main() {
           <div style={{width: '100%'}}>
           <Routes >
             <Route path="/" element={<Login />}/>{/*Login画面*/}
-            <Route path="/edit-profile" element={<Editprof />}/>{/*プロフィール編集画面*/}
-            <Route path="/00000000000000000000000001" element={<Channel />}/>{/*チャンネル画面*/}
-            <Route path="/00000000000000000000000002" element={<Channel2 />}/>
+            <Route path="/Login" element={<YetLogin />}/>
+            <Route path="/edit-profile" element={loginUser ? <Editprof />  : <Navigate to="/Login" />}/>{/*プロフィール編集画面*/}
+            <Route path="/00000000000000000000000001" element={loginUser ? <Channel />  : <Navigate to="/Login" />}/>{/*チャンネル画面*/}
+            <Route path="/00000000000000000000000002" element={loginUser ? <Channel2 />  : <Navigate to="/Login" />}/>
           </Routes>
           </div>
       </div>
