@@ -85,13 +85,14 @@ function Channel() {
             }
             const good = await res.json();
             setGoods(good);
+            setGoods(goods + 1);
             console.log(good);
             const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/good", {
                 method: "PUT",
                 body: JSON.stringify({
                     channelid: "00000000000000000000000001",
                     commentid: id,
-                    good: goods + 1,
+                    good: goods,
                 }),
             });
             if (!result.ok) {
@@ -118,7 +119,6 @@ function Channel() {
         <div className="item" key={comment.id}>
           <p>user:{comment.username}</p>
           <p>comment:{comment.comment}</p>
-          <p>{goods}</p>
           <button
             onClick={() => {
                 fetchGood(comment.id);
