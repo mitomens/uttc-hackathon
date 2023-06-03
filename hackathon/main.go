@@ -36,6 +36,22 @@ type ChannelGet struct {
 	Name string `json:"name"`
 }
 
+type CommentGet struct {
+	Id        string `json:"id"`
+	ChannelId string `json:"channelid"`
+	UserId    string `json:"userid"`
+	UserName  string `json:"username"`
+	Comment   string `json:"comment"`
+	Good      int    `json:"good"`
+}
+
+type CommentPost struct {
+	ChannelId string `json:"channelid"`
+	UserId    string `json:"userid"`
+	UserName  string `json:"username"`
+	Comment   string `json:"comment"`
+}
+
 // ① GoプログラムからMySQLへ接続
 var db *sql.DB
 
@@ -220,6 +236,10 @@ func handler2(w http.ResponseWriter, r *http.Request) {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(bytes)
+	default:
+		log.Printf("fail: HTTP Method is %s\n", r.Method)
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 }
 
@@ -264,6 +284,131 @@ func handler3(w http.ResponseWriter, r *http.Request) {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(bytes)
+
+	default:
+		log.Printf("fail: HTTP Method is %s\n", r.Method)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+}
+func handler4(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "https://uttc-hackathon-tiu8.vercel.app")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		channelid := r.URL.Query().Get("channelid") // To be filled
+		if channelid == "" {
+			log.Println("fail: name err")
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		// ②-2
+		rows, err := db.Query("SELECT id, channelid, userid, username, comment, good FROM commentdb WHERE channelid = ?", channelid)
+		if err != nil {
+			log.Printf("fail: db.Query, %v\n", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		// ②-3
+		comments := make([]CommentGet, 0)
+		for rows.Next() {
+			var u CommentGet
+			if err := rows.Scan(&u.Id, &u.ChannelId, &u.UserId, &u.UserName, &u.Comment, &u.Good); err != nil {
+				log.Printf("fail: rows.Scan, %v\n", err)
+
+				if err := rows.Close(); err != nil { // 500を返して終了するが、その前にrowsのClose処理が必要
+					log.Printf("fail: rows.Close(), %v\n", err)
+				}
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			comments = append(comments, u)
+		}
+
+		// ②-4
+		bytes, err := json.Marshal(comments)
+		if err != nil {
+			log.Printf("fail: json.Marshal, %v\n", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(bytes)
+
+	case http.MethodPost:
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "https://uttc-hackathon-tiu8.vercel.app")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		entropy := rand.New(rand.NewSource(time.Now().UnixNano()))
+		ms := ulid.Timestamp(time.Now())
+		Id, err := ulid.New(ms, entropy)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("fail: ulid, %v\n", err)
+			return
+		}
+
+		var body CommentPost
+
+		if e := json.NewDecoder(r.Body).Decode(&body); e != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("fail: json.Decoder.Decode, %v\n", err)
+			return
+		}
+
+		if body.Comment == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			log.Printf("fail: Comment, %v\n", err)
+			return
+		}
+		tx, err := db.Begin()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("fail: Begin, %v\n", err)
+			return
+		}
+		query := "INSERT INTO commentdb(id, channelid, userid, username, comment, good ) VALUE(?, ?, ?, ?, ?, ?)"
+		_, er := tx.Exec(query, Id.String(), body.ChannelId, body.UserId, body.UserName, body.Comment, 0)
+		if er != nil {
+			tx.Rollback()
+			if err := tx.Rollback(); err != nil {
+				log.Printf("fail: tx.Rollback, %v\n", err)
+			}
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("fail: Exec, %v\n", er)
+			return
+		}
+
+		if err := tx.Commit(); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("fail: Commit, %v\n", err)
+			return
+		}
+
+		//成功したら
+		w.WriteHeader(http.StatusOK)
+		p := CommentId{Id: Id.String()}
+		s, err := json.Marshal(p)
+		if err != nil {
+			log.Printf("fail: json.Marshal, %v\n", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(s)
+
+		//log.Println("{id : " + Id.String() + "}")
+	default:
+		log.Printf("fail: HTTP Method is %s\n", r.Method)
+		w.WriteHeader(http.StatusBadRequest)
+		return
 	}
 }
 
@@ -272,6 +417,7 @@ func main() {
 	http.HandleFunc("/user", handler)
 	http.HandleFunc("/users", handler2)
 	http.HandleFunc("/allchannels", handler3)
+	http.HandleFunc("/channel", handler4)
 
 	// ③ Ctrl+CでHTTPサーバー停止時にDBをクローズする
 	closeDBWithSysCall()

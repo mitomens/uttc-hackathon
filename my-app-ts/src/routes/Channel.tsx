@@ -10,10 +10,13 @@ import { onAuthStateChanged } from "firebase/auth";
 //チャンネル名を一番上に書く
 function Channel() {
 
-  type User = {
+  type Comment = {
     id: string;
-    name: string;
+    channelid: string;
+    userid: string;
+    username: string;
     comment: string;
+    good: number;
   };
 
   const [loginUser, setLoginUser] = useState(fireAuth.currentUser);
@@ -26,21 +29,21 @@ function Channel() {
     
     return unsubscribe; // Unsubscribe on component unmount
   }, []);
-  
+
   const [comment, setComment] = useState<string>("");
-  const [users, setUsers] = useState<User[]>([]);
+  const [comments, setComments] = useState<Comment[]>([]);
 
 
   const fetchUsers = async () => {
     try {
-      const res = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/users");
+      const res = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/channel?channelid=00000000000000000000000001");
       if (!res.ok) {
         throw Error(`Failed to fetch users: ${res.status}`);
       }
 
-      const users = await res.json();
-      setUsers(users);
-      console.log(users);
+      const comments = await res.json();
+      setComments(comments);
+      console.log(comments);
     } catch (err) {
       console.error(err);
     }
@@ -51,9 +54,11 @@ function Channel() {
 
 
     try {
-      const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/user", {
+      const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/channel", {
         method: "POST",
         body: JSON.stringify({
+            channelid: "00000000000000000000000001",
+            userid: loginUser?.uid,
             name: loginUser?.displayName,
             comment: comment,
         }),
@@ -76,13 +81,14 @@ function Channel() {
  
   return (
     <div className="main-container">
-      <header className = "header">ChannelName</header>
+      <header className = "header">Channel1</header>
       <div>
       <ul className = "container">
-      {users.map((user) => (
-        <div className="item" key={user.id}>
-          <p>{user.name}</p>
-          <p>{user.comment}</p>
+      {comments.map((comment) => (
+        <div className="item" key={comment.id}>
+          <p>user:{comment.username}</p>
+          <p>comment:{comment.comment}</p>
+          <p>good:{comment.good}</p>
           <p>reply</p>{/*ここに返信ボタンを作る*/}
           <p>edit</p>{/*ここに編集ボタンを作る*/}
         </div>
