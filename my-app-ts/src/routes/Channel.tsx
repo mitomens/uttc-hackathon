@@ -3,6 +3,7 @@ import "./Channel.css";
 import { fireAuth } from "../firebase";
 
 import { onAuthStateChanged } from "firebase/auth";
+import Modal from 'react-modal';
 
 
 
@@ -18,6 +19,7 @@ function Channel() {
     comment: string;
     good: number;
   };
+
   interface Good {
     good: number;
   };
@@ -37,6 +39,9 @@ function Channel() {
 
   const [comment, setComment] = useState<string>("");
   const [comments, setComments] = useState<Comment[]>([]);
+
+  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [editComment, setEditComment] = useState<string>("");
 
 
   const fetchUsers = async () => {
@@ -79,7 +84,7 @@ function Channel() {
       console.error(err);
     }
   };
-
+//ここからgoodの処理
   const fetchGood = async (id: string) => {  
         try {
             const res = await fetch(`https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/good?commentid=${id}`);
@@ -107,6 +112,9 @@ function Channel() {
   };
 
 
+
+
+
   useEffect(() => {
     fetchUsers();}
     , []);//ここでデータを取得している
@@ -119,6 +127,57 @@ function Channel() {
       {comments.map((comment) => (
         <div className="item" key={comment.id}>
           <p>user:{comment.username}</p>
+          {isEditing && comment.userid === loginUser?.uid ? (
+            <Modal
+            isOpen={isEditing}
+            onRequestClose={() => setIsEditing(false)}
+            contentLabel="Edit Comment"
+            >
+            <h2>Edit Comment</h2>
+            <form
+                style={{ display: "flex", flexDirection: "column" }}
+                onSubmit={async (e) => {
+                e.preventDefault();
+                try {
+                    const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/channel", {
+                    method: "PUT",
+                    body: JSON.stringify({
+                        id: comment.id,
+                        channelid: comment.channelid,
+                        userid: comment.userid,
+                        username: comment.username,
+                        comment: editComment+"(編集済み)",
+                    }),
+                    });
+                    if (!result.ok) {
+                    throw Error(`Failed to create user: ${result.status}`);
+                    }
+                    setIsEditing(false);
+                    fetchUsers();//ここで再度データを取得している
+                    console.log(result);
+                } catch (err) {
+                    console.error(err);
+                }
+                }}>
+                <label>Comment: </label>
+                <input
+                type={"text"}
+                value={editComment}
+                onChange={(e) => setEditComment(e.target.value)}
+                ></input>
+                <button type={"submit"}>update</button>
+                </form>
+                <button onClick={() => setIsEditing(false)}>cancel</button>
+            </Modal>
+            ) : (
+            <p>comment:{comment.comment}</p>
+            )}
+            {comment.userid ===  loginUser?.uid && (
+              <p onClick={() => {
+                setEditComment(comment.comment);
+                setIsEditing(true);
+            }}>編集</p>
+            )}
           <p>comment:{comment.comment}</p>
           <button
             onClick={() => {
@@ -130,7 +189,7 @@ function Channel() {
             <p>
             {comment.good}</p>
           <p>reply</p>{/*ここに返信ボタンを作る*/}
-          <p>edit</p>{/*ここに編集ボタンを作る*/}
+          <p>編集</p>{/*ここに編集ボタンを作る*/}
           <p>delete</p>{/*ここに削除ボタンを作る*/}
         </div>
       ))}

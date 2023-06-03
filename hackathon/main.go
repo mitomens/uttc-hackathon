@@ -51,6 +51,13 @@ type CommentPost struct {
 	UserName  string `json:"username"`
 	Comment   string `json:"comment"`
 }
+type CommentPut struct {
+	Id        string `json:"id"`
+	ChannelId string `json:"channelid"`
+	UserId    string `json:"userid"`
+	UserName  string `json:"username"`
+	Comment   string `json:"comment"`
+}
 
 type GoodGet struct {
 	Good int `json:"good"`
@@ -385,6 +392,69 @@ func handler4(w http.ResponseWriter, r *http.Request) {
 		}
 		query := "INSERT INTO commentdb(id, channelid, userid, username, comment, good ) VALUE(?, ?, ?, ?, ?, ?)"
 		_, er := tx.Exec(query, Id.String(), body.ChannelId, body.UserId, body.UserName, body.Comment, 0)
+		if er != nil {
+			tx.Rollback()
+			if err := tx.Rollback(); err != nil {
+				log.Printf("fail: tx.Rollback, %v\n", err)
+			}
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("fail: Exec, %v\n", er)
+			return
+		}
+
+		if err := tx.Commit(); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("fail: Commit, %v\n", err)
+			return
+		}
+
+		//成功したら
+		w.WriteHeader(http.StatusOK)
+		p := CommentId{Id: Id.String()}
+		s, err := json.Marshal(p)
+		if err != nil {
+			log.Printf("fail: json.Marshal, %v\n", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(s)
+	case http.MethodPut:
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "https://uttc-hackathon-tiu8.vercel.app")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		entropy := rand.New(rand.NewSource(time.Now().UnixNano()))
+		ms := ulid.Timestamp(time.Now())
+		Id, err := ulid.New(ms, entropy)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("fail: ulid, %v\n", err)
+			return
+		}
+
+		var body CommentPut
+
+		if e := json.NewDecoder(r.Body).Decode(&body); e != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("fail: json.Decoder.Decode, %v\n", err)
+			return
+		}
+
+		if body.Comment == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			log.Printf("fail: Comment, %v\n", err)
+			return
+		}
+		tx, err := db.Begin()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("fail: Begin, %v\n", err)
+			return
+		}
+		query := "UPDATE commentdb SET comment = ? WHERE id = ?"
+		_, er := tx.Exec(query, Id.String(), body.Id)
 		if er != nil {
 			tx.Rollback()
 			if err := tx.Rollback(); err != nil {
