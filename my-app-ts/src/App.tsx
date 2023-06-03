@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Routes, Link } from 'react-router-dom';
 import Login from "./routes/Login";
 import Editprof from "./routes/Editprof";
 import Channel from "./routes/Channel";
+import Channel2 from "./routes/Channel2";
 import { fireAuth } from "./firebase";
 import { signInWithPopup, GoogleAuthProvider, signOut ,AuthError, UserCredential, onAuthStateChanged } from "firebase/auth";
 
@@ -62,8 +63,7 @@ const Sidebar = () => {
             <div className="item" key={channel.id}>
             <ul>
             <li>
-            {/*<Link to={`${channel.id}`}>*/}
-            <Link to="/channel1">
+            <Link to={`/${channel.id}`}>
               <h2 style={{ display: 'flex', alignItems: 'center' }}>
                 {channel.name}
               </h2>
@@ -103,7 +103,8 @@ function Main() {
           <Routes >
             <Route path="/" element={<Login />}/>{/*Login画面*/}
             <Route path="/edit-profile" element={<Editprof />}/>{/*プロフィール編集画面*/}
-            <Route path="/channel1" element={<Channel />}/>{/*チャンネル画面*/}
+            <Route path="/00000000000000000000000001" element={<Channel />}/>{/*チャンネル画面*/}
+            <Route path="/00000000000000000000000002" element={<Channel2 />}/>
           </Routes>
           </div>
       </div>
