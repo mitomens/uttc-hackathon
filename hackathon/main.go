@@ -428,22 +428,15 @@ func handler5(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-		channelid := r.URL.Query().Get("channelid") // To be filled
-		if channelid == "" {
-			log.Println("fail: channel err")
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-
 		commentid := r.URL.Query().Get("commentid") // To be filled
-		if channelid == "" {
+		if commentid == "" {
 			log.Println("fail: commentid err")
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
 
 		// ②-2
-		rows, err := db.Query("SELECT good FROM commentdb WHERE channelid = ? AND id = ?", channelid, commentid)
+		rows, err := db.Query("SELECT good FROM commentdb WHERE id = ?", commentid)
 		if err != nil {
 			log.Printf("fail: db.Query, %v\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
