@@ -18,6 +18,10 @@ function Channel() {
     comment: string;
     good: number;
   };
+  interface Good {
+    good: number;
+  };
+
 
 
   const [loginUser, setLoginUser] = useState(fireAuth.currentUser);
@@ -33,7 +37,6 @@ function Channel() {
 
   const [comment, setComment] = useState<string>("");
   const [comments, setComments] = useState<Comment[]>([]);
-  const [goods, setGoods] = useState<number>(0);
 
 
   const fetchUsers = async () => {
@@ -79,25 +82,23 @@ function Channel() {
 
   const fetchGood = async (id: string) => {  
         try {
-            const res = await fetch(`https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/good?channelid=00000000000000000000000001&commentid=${id}`);
+            const res = await fetch(`https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/good?commentid=${id}`);
             if (!res.ok) {
                 throw Error(`Failed to fetch users: ${res.status}`);
             }
             const good = await res.json();
-            setGoods(good);
-            setGoods(goods + 1);
+            const good2:Good = good.good + 1;
             console.log(good);
-            {/*const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/good", {
-                method: "PUT",
+            const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/good", {
+                method: "POST",
                 body: JSON.stringify({
-                    channelid: "00000000000000000000000001",
                     commentid: id,
-                    good: goods,
+                    good: good2,
                 }),
             });
             if (!result.ok) {
                 throw Error(`Failed to create user: ${result.status}`);
-            }*/}
+            }
             fetchUsers();//ここで再度データを取得している
             //console.log(result);
         } catch (err) {
@@ -126,8 +127,6 @@ function Channel() {
             >
             good
             </button>
-            <p>
-            {goods}</p>
             <p>
             {comment.good}</p>
           <p>reply</p>{/*ここに返信ボタンを作る*/}
