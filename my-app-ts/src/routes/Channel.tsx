@@ -87,7 +87,7 @@ function Channel() {
             setGoods(good);
             setGoods(goods + 1);
             console.log(good);
-            const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/good", {
+            {/*const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/good", {
                 method: "PUT",
                 body: JSON.stringify({
                     channelid: "00000000000000000000000001",
@@ -97,9 +97,9 @@ function Channel() {
             });
             if (!result.ok) {
                 throw Error(`Failed to create user: ${result.status}`);
-            }
+            }*/}
             fetchUsers();//ここで再度データを取得している
-            console.log(result);
+            //console.log(result);
         } catch (err) {
             console.error(err);
         }
@@ -126,6 +126,8 @@ function Channel() {
             >
             good
             </button>
+            <p>
+            {goods}</p>
             <p>
             {comment.good}</p>
           <p>reply</p>{/*ここに返信ボタンを作る*/}
