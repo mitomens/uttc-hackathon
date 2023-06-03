@@ -178,7 +178,6 @@ function Channel() {
                 setIsEditing(true);
             }}>編集</p>
             )}
-          <p>comment:{comment.comment}</p>
           <button
             onClick={() => {
                 fetchGood(comment.id);
