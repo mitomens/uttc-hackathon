@@ -19,9 +19,42 @@ const Sidebar = () => {
   const [loginUser, setLoginUser] = useState(fireAuth.currentUser);
   
   // ログイン状態を監視して、stateをリアルタイムで更新する
-  onAuthStateChanged(fireAuth, user => {
-    setLoginUser(user);
-  });
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(fireAuth, user => {
+      setLoginUser(user);
+    });
+  
+    return unsubscribe; // Unsubscribe on component unmount
+  }, []);
+
+  //channeldbからデータを取得する
+  type Channel = {
+    id: string;
+    name: string;
+  };
+  
+  
+  const [channelname, setChannelname] = useState<Channel[]>([]);
+
+
+  const fetchUsers = async () => {
+    try {
+      const res = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/allchannels");
+      if (!res.ok) {
+        throw Error(`Failed to fetch users: ${res.status}`);
+      }
+
+      const channels = await res.json();
+      setChannelname(channels);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  useEffect(() => {
+    fetchUsers();}
+    , []);//ここでデータを取得している
+
   return (
     <nav style={{ width: '300px', height: '800px', padding: '16px', backgroundColor: '#FFF' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #CCC' }}>
@@ -43,6 +76,17 @@ const Sidebar = () => {
                 <span style={{ marginRight: '8px' }}>{item.icon}</span>
                 {item.label}
               </h2>
+            </div>
+          </Link>
+          </li>
+          </ul>
+        ))}
+        {channelname.map((channel) => (
+          <ul>
+          <li>
+          <Link to="/channel">
+            <div className="item" key={channel.id}>
+              <p style={{ display: 'flex', alignItems: 'center' }}>{channel.name}</p>
             </div>
           </Link>
           </li>

@@ -27,7 +27,7 @@ type UserPost struct {
 	Comment string `json:"comment"`
 }
 
-type PersonId struct {
+type CommentId struct {
 	Id string `json:"id"`
 }
 
@@ -154,7 +154,7 @@ func handler(w http.ResponseWriter, r *http.Request) {
 
 		//成功したら
 		w.WriteHeader(http.StatusOK)
-		p := PersonId{Id: Id.String()}
+		p := CommentId{Id: Id.String()}
 		s, err := json.Marshal(p)
 		if err != nil {
 			log.Printf("fail: json.Marshal, %v\n", err)
@@ -218,10 +218,55 @@ func handler2(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func handler3(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "https://uttc-hackathon-tiu8.vercel.app")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		// ②-2
+		rows, err := db.Query("SELECT id, name FROM channeldb")
+		if err != nil {
+			log.Printf("fail: db.Query, %v\n", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		// ②-3
+		users := make([]UserResForHTTPGet, 0)
+		for rows.Next() {
+			var u UserResForHTTPGet
+			if err := rows.Scan(&u.Id, &u.Name, &u.Comment); err != nil {
+				log.Printf("fail: rows.Scan, %v\n", err)
+
+				if err := rows.Close(); err != nil { // 500を返して終了するが、その前にrowsのClose処理が必要
+					log.Printf("fail: rows.Close(), %v\n", err)
+				}
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			users = append(users, u)
+		}
+
+		// ②-4
+		bytes, err := json.Marshal(users)
+		if err != nil {
+			log.Printf("fail: json.Marshal, %v\n", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(bytes)
+	}
+}
+
 func main() {
 	// ② /userでリクエストされたらnameパラメーターと一致する名前を持つレコードをJSON形式で返す
 	http.HandleFunc("/user", handler)
 	http.HandleFunc("/users", handler2)
+	http.HandleFunc("/allchannels", handler3)
 
 	// ③ Ctrl+CでHTTPサーバー停止時にDBをクローズする
 	closeDBWithSysCall()
