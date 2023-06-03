@@ -84,7 +84,7 @@ function Channel() {
 
     const fetchGood = async (id: string) => {  
         try {
-            const res = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/good?channelid=00000000000000000000000001&commentid=" +id);
+            const res = await fetch(`https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/good?channelid=00000000000000000000000001&commentid=${id}`);
             if (!res.ok) {
                 throw Error(`Failed to fetch users: ${res.status}`);
             }
@@ -95,7 +95,7 @@ function Channel() {
                 body: JSON.stringify({
                     channelid: "00000000000000000000000001",
                     commentid: id,
-                    good: good[0].good + 1,
+                    good: good.good + 1,
                 }),
             });
             if (!result.ok) {
