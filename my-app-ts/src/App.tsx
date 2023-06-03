@@ -6,15 +6,6 @@ import Channel from "./routes/Channel";
 import { fireAuth } from "./firebase";
 import { signInWithPopup, GoogleAuthProvider, signOut ,AuthError, UserCredential, onAuthStateChanged } from "firebase/auth";
 
-const mockdata = [
-  { label: 'Channel1', icon: '📊' },
-  { label: 'Channel2', icon: '🗞️' },
-  { label: 'Channel3', icon: '📅' },
-  { label: 'Channel4', icon: '📈' },
-  { label: 'Channel5', icon: '📄' },
-];
-
-
 const Sidebar = () => {
   const [loginUser, setLoginUser] = useState(fireAuth.currentUser);
   
@@ -67,30 +58,20 @@ const Sidebar = () => {
         </ul>
       </div>
       <div style={{ flexGrow: 1, overflowY: 'scroll', paddingTop: '32px', paddingBottom: '32px' }}>
-        {mockdata.map((item) => (
-          <ul>
-          <li>
-          <Link to="/channel">
-            <div>
-              <h2 style={{ display: 'flex', alignItems: 'center' }}>
-                <span style={{ marginRight: '8px' }}>{item.icon}</span>
-                {item.label}
-              </h2>
-            </div>
-          </Link>
-          </li>
-          </ul>
-        ))}
         {channels.map((channel) => (
-          <ul>
-          <li>
-          <Link to="/channel">
             <div className="item" key={channel.id}>
-              <p style={{ display: 'flex', alignItems: 'center' }}>{channel.name}</p>
+            <ul>
+            <li>
+            {/*<Link to={`${channel.id}`}>*/}
+            <Link to="/channel1">
+              <h2 style={{ display: 'flex', alignItems: 'center' }}>
+                {channel.name}
+              </h2>
+            </Link>
+            </li>
+            </ul>
             </div>
-          </Link>
-          </li>
-          </ul>
+
         ))}
       </div>
       <ul>
@@ -122,8 +103,7 @@ function Main() {
           <Routes >
             <Route path="/" element={<Login />}/>{/*Login画面*/}
             <Route path="/edit-profile" element={<Editprof />}/>{/*プロフィール編集画面*/}
-            {/*<Route path="/:channelId">*/}
-            <Route path="/channel" element={<Channel />}/>{/*チャンネル画面*/}
+            <Route path="/channel1" element={<Channel />}/>{/*チャンネル画面*/}
           </Routes>
           </div>
       </div>
