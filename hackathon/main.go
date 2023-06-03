@@ -477,7 +477,7 @@ func handler5(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(bytes)
 
-	case http.MethodPut:
+	case http.MethodPost:
 		w.Header().Set("Content-Type", "application/json")
 		w.Header().Set("Access-Control-Allow-Origin", "https://uttc-hackathon-tiu8.vercel.app")
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
