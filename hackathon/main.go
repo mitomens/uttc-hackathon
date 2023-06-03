@@ -57,7 +57,6 @@ type GoodGet struct {
 }
 
 type GoodPut struct {
-	ChannelId string `json:"channelid"`
 	CommentId string `json:"id"`
 	Good      int    `json:"good"`
 }
@@ -502,8 +501,8 @@ func handler5(w http.ResponseWriter, r *http.Request) {
 			log.Printf("fail: Begin, %v\n", err)
 			return
 		}
-		query := "UPDATE commentdb SET good = ? WHERE channelid = ? AND id = ?"
-		_, er := tx.Exec(query, body.Good, body.ChannelId, body.CommentId)
+		query := "UPDATE commentdb SET good = ? WHERE id = ?"
+		_, er := tx.Exec(query, body.Good, body.CommentId)
 		if er != nil {
 			tx.Rollback()
 			if err := tx.Rollback(); err != nil {
