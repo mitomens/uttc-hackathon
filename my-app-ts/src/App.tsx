@@ -34,7 +34,7 @@ const Sidebar = () => {
   };
   
   
-  const [channelname, setChannelname] = useState<Channel[]>([]);
+  const [channels, setChannels] = useState<Channel[]>([]);
 
 
   const fetchUsers = async () => {
@@ -45,7 +45,7 @@ const Sidebar = () => {
       }
 
       const channels = await res.json();
-      setChannelname(channels);
+      setChannels(channels);
     } catch (err) {
       console.error(err);
     }
@@ -81,7 +81,7 @@ const Sidebar = () => {
           </li>
           </ul>
         ))}
-        {channelname.map((channel) => (
+        {channels.map((channel) => (
           <ul>
           <li>
           <Link to="/channel">
