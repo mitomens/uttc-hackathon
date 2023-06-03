@@ -52,6 +52,16 @@ type CommentPost struct {
 	Comment   string `json:"comment"`
 }
 
+type GoodGet struct {
+	Good int `json:"good"`
+}
+
+type GoodPut struct {
+	ChannelId string `json:"channelid"`
+	CommentId string `json:"id"`
+	Good      int    `json:"good"`
+}
+
 // ① GoプログラムからMySQLへ接続
 var db *sql.DB
 
@@ -411,6 +421,124 @@ func handler4(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+func handler5(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "https://uttc-hackathon-tiu8.vercel.app")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		channelid := r.URL.Query().Get("channelid") // To be filled
+		if channelid == "" {
+			log.Println("fail: channel err")
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		commentid := r.URL.Query().Get("commentid") // To be filled
+		if channelid == "" {
+			log.Println("fail: commentid err")
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		// ②-2
+		rows, err := db.Query("SELECT good FROM commentdb WHERE channelid = ? AND commentid = ?", channelid, commentid)
+		if err != nil {
+			log.Printf("fail: db.Query, %v\n", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		// ②-3
+		goods := make([]GoodGet, 0)
+		for rows.Next() {
+			var u GoodGet
+			if err := rows.Scan(&u.Good); err != nil {
+				log.Printf("fail: rows.Scan, %v\n", err)
+
+				if err := rows.Close(); err != nil { // 500を返して終了するが、その前にrowsのClose処理が必要
+					log.Printf("fail: rows.Close(), %v\n", err)
+				}
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			goods = append(goods, u)
+		}
+
+		// ②-4
+		bytes, err := json.Marshal(goods)
+		if err != nil {
+			log.Printf("fail: json.Marshal, %v\n", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(bytes)
+
+	case http.MethodPut:
+		w.Header().Set("Content-Type", "application/json")
+		w.Header().Set("Access-Control-Allow-Origin", "https://uttc-hackathon-tiu8.vercel.app")
+		w.Header().Set("Access-Control-Allow-Credentials", "true")
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+
+		var body GoodPut
+
+		if e := json.NewDecoder(r.Body).Decode(&body); e != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("fail: json.Decoder.Decode, %v\n", e)
+			return
+		}
+
+		if body.CommentId == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			log.Printf("fail: Comment is empty")
+			return
+		}
+		tx, err := db.Begin()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("fail: Begin, %v\n", err)
+			return
+		}
+		query := "UPDATE commentdb SET good=? WHERE channelid=? AND id =?"
+		_, er := tx.Exec(query, body.Good, body.ChannelId, body.CommentId)
+		if er != nil {
+			tx.Rollback()
+			if err := tx.Rollback(); err != nil {
+				log.Printf("fail: tx.Rollback, %v\n", err)
+			}
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("fail: Exec, %v\n", er)
+			return
+		}
+
+		if err := tx.Commit(); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("fail: Commit, %v\n", err)
+			return
+		}
+
+		//成功したら
+		w.WriteHeader(http.StatusOK)
+		p := CommentId{Id: body.CommentId}
+		s, err := json.Marshal(p)
+		if err != nil {
+			log.Printf("fail: json.Marshal, %v\n", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(s)
+
+		//log.Println("{id : " + Id.String() + "}")
+	default:
+		log.Printf("fail: HTTP Method is %s\n", r.Method)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+}
 
 func main() {
 	// ② /userでリクエストされたらnameパラメーターと一致する名前を持つレコードをJSON形式で返す
@@ -418,6 +546,7 @@ func main() {
 	http.HandleFunc("/users", handler2)
 	http.HandleFunc("/allchannels", handler3)
 	http.HandleFunc("/channel", handler4)
+	http.HandleFunc("/good", handler5)
 
 	// ③ Ctrl+CでHTTPサーバー停止時にDBをクローズする
 	closeDBWithSysCall()
