@@ -31,6 +31,11 @@ type CommentId struct {
 	Id string `json:"id"`
 }
 
+type ChannelGet struct {
+	Id   string `json:"id"`
+	Name string `json:"name"`
+}
+
 // ① GoプログラムからMySQLへ接続
 var db *sql.DB
 
@@ -235,10 +240,10 @@ func handler3(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// ②-3
-		users := make([]UserResForHTTPGet, 0)
+		channels := make([]ChannelGet, 0)
 		for rows.Next() {
-			var u UserResForHTTPGet
-			if err := rows.Scan(&u.Id, &u.Name, &u.Comment); err != nil {
+			var u ChannelGet
+			if err := rows.Scan(&u.Id, &u.Name); err != nil {
 				log.Printf("fail: rows.Scan, %v\n", err)
 
 				if err := rows.Close(); err != nil { // 500を返して終了するが、その前にrowsのClose処理が必要
@@ -247,11 +252,11 @@ func handler3(w http.ResponseWriter, r *http.Request) {
 				w.WriteHeader(http.StatusInternalServerError)
 				return
 			}
-			users = append(users, u)
+			channels = append(channels, u)
 		}
 
 		// ②-4
-		bytes, err := json.Marshal(users)
+		bytes, err := json.Marshal(channels)
 		if err != nil {
 			log.Printf("fail: json.Marshal, %v\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
