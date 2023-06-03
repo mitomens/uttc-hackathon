@@ -19,6 +19,13 @@ function Channel() {
     good: number;
   };
 
+  type Good = {
+    id: string;
+    channelid: string;
+    good: number;
+  }
+
+
   const [loginUser, setLoginUser] = useState(fireAuth.currentUser);
   
   // ログイン状態を監視して、stateをリアルタイムで更新する
@@ -75,6 +82,33 @@ function Channel() {
     }
   };
 
+    const fetchGood = async (id: string) => {  
+        try {
+            const res = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/good?channelid=00000000000000000000000001&commentid=" +id);
+            if (!res.ok) {
+                throw Error(`Failed to fetch users: ${res.status}`);
+            }
+            const good = await res.json();
+            console.log(good);
+            const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/good", {
+                method: "PUT",
+                body: JSON.stringify({
+                    channelid: "00000000000000000000000001",
+                    commentid: id,
+                    good: good[0].good + 1,
+                }),
+            });
+            if (!result.ok) {
+                throw Error(`Failed to create user: ${result.status}`);
+            }
+            fetchUsers();//ここで再度データを取得している
+            console.log(result);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
+
   useEffect(() => {
     fetchUsers();}
     , []);//ここでデータを取得している
@@ -88,7 +122,15 @@ function Channel() {
         <div className="item" key={comment.id}>
           <p>user:{comment.username}</p>
           <p>comment:{comment.comment}</p>
-          <p>good:{comment.good}</p>
+          <button
+            onClick={() => {
+                fetchGood(comment.id);
+            }}
+            >
+            good
+            </button>
+            <p>
+            {comment.good}</p>
           <p>reply</p>{/*ここに返信ボタンを作る*/}
           <p>edit</p>{/*ここに編集ボタンを作る*/}
           <p>delete</p>{/*ここに削除ボタンを作る*/}
