@@ -425,26 +425,17 @@ func handler4(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Access-Control-Allow-Credentials", "true")
 		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
-		entropy := rand.New(rand.NewSource(time.Now().UnixNano()))
-		ms := ulid.Timestamp(time.Now())
-		Id, err := ulid.New(ms, entropy)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			log.Printf("fail: ulid, %v\n", err)
-			return
-		}
-
 		var body CommentPut
 
 		if e := json.NewDecoder(r.Body).Decode(&body); e != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			log.Printf("fail: json.Decoder.Decode, %v\n", err)
+			log.Printf("fail: json.Decoder.Decode, %v\n", e)
 			return
 		}
 
 		if body.Comment == "" {
 			w.WriteHeader(http.StatusBadRequest)
-			log.Printf("fail: Comment, %v\n", err)
+			log.Printf("fail: Comment is null")
 			return
 		}
 		tx, err := db.Begin()
@@ -454,7 +445,7 @@ func handler4(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		query := "UPDATE commentdb SET comment = ? WHERE id = ?"
-		_, er := tx.Exec(query, Id.String(), body.Id)
+		_, er := tx.Exec(query, body.Id)
 		if er != nil {
 			tx.Rollback()
 			if err := tx.Rollback(); err != nil {
@@ -473,7 +464,7 @@ func handler4(w http.ResponseWriter, r *http.Request) {
 
 		//成功したら
 		w.WriteHeader(http.StatusOK)
-		p := CommentId{Id: Id.String()}
+		p := CommentId{Id: body.Id}
 		s, err := json.Marshal(p)
 		if err != nil {
 			log.Printf("fail: json.Marshal, %v\n", err)
