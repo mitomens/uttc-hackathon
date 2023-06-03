@@ -444,7 +444,7 @@ func handler5(w http.ResponseWriter, r *http.Request) {
 		}
 
 		// ②-2
-		rows, err := db.Query("SELECT good FROM commentdb WHERE channelid = ? AND commentid = ?", channelid, commentid)
+		rows, err := db.Query("SELECT good FROM commentdb WHERE channelid = ? AND id = ?", channelid, commentid)
 		if err != nil {
 			log.Printf("fail: db.Query, %v\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
