@@ -91,6 +91,7 @@ function Channel() {
           <p>good:{comment.good}</p>
           <p>reply</p>{/*ここに返信ボタンを作る*/}
           <p>edit</p>{/*ここに編集ボタンを作る*/}
+          <p>delete</p>{/*ここに削除ボタンを作る*/}
         </div>
       ))}
       </ul>

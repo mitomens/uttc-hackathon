@@ -55,7 +55,7 @@ const Sidebar = () => {
         <span style={{ fontWeight: '700' }}>v4.3.2</span>
         <ul>
         <li>
-          <Link to="/">Log in</Link>
+          <Link to="/">{loginUser ? "ログアウト": "ログイン"}</Link>
         </li>
         </ul>
       </div>
