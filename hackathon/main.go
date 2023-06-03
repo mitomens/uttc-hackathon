@@ -445,7 +445,7 @@ func handler4(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		query := "UPDATE commentdb SET comment = ? WHERE id = ?"
-		_, er := tx.Exec(query, body.Id)
+		_, er := tx.Exec(query, body.Comment, body.Id)
 		if er != nil {
 			tx.Rollback()
 			if err := tx.Rollback(); err != nil {
