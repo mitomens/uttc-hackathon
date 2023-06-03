@@ -19,12 +19,6 @@ function Channel() {
     good: number;
   };
 
-  type Good = {
-    id: string;
-    channelid: string;
-    good: number;
-  }
-
 
   const [loginUser, setLoginUser] = useState(fireAuth.currentUser);
   
@@ -39,6 +33,7 @@ function Channel() {
 
   const [comment, setComment] = useState<string>("");
   const [comments, setComments] = useState<Comment[]>([]);
+  const [goods, setGoods] = useState<number>(0);
 
 
   const fetchUsers = async () => {
@@ -82,20 +77,21 @@ function Channel() {
     }
   };
 
-    const fetchGood = async (id: string) => {  
+  const fetchGood = async (id: string) => {  
         try {
             const res = await fetch(`https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/good?channelid=00000000000000000000000001&commentid=${id}`);
             if (!res.ok) {
                 throw Error(`Failed to fetch users: ${res.status}`);
             }
             const good = await res.json();
+            setGoods(good);
             console.log(good);
             const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/good", {
                 method: "PUT",
                 body: JSON.stringify({
                     channelid: "00000000000000000000000001",
                     commentid: id,
-                    good: good.good + 1,
+                    good: goods + 1,
                 }),
             });
             if (!result.ok) {
@@ -106,7 +102,7 @@ function Channel() {
         } catch (err) {
             console.error(err);
         }
-    };
+  };
 
 
   useEffect(() => {
@@ -122,6 +118,7 @@ function Channel() {
         <div className="item" key={comment.id}>
           <p>user:{comment.username}</p>
           <p>comment:{comment.comment}</p>
+          <p>{comment.id}</p>
           <button
             onClick={() => {
                 fetchGood(comment.id);
