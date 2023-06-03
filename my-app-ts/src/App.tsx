@@ -108,9 +108,9 @@ function Main() {
 
   return (
     <BrowserRouter> 
-      <div className="Main" style={{display: 'flex'}}>
+      <div className="Sidebar" style={{display: 'flex'}}>
         <Sidebar />
-          <div style={{width: '100%'}}>
+          <div className="Main" style={{width: '60%'}}>
           <Routes >
             <Route path="/" element={<Login />}/>{/*Login画面*/}
             <Route path="/Login" element={<YetLogin />}/>
@@ -118,6 +118,9 @@ function Main() {
             <Route path="/00000000000000000000000001" element={loginUser ? <Channel />  : <Navigate to="/Login" />}/>{/*チャンネル画面*/}
             <Route path="/00000000000000000000000002" element={loginUser ? <Channel2 />  : <Navigate to="/Login" />}/>
           </Routes>
+          </div>
+          <div className="Rightbar" style={{width: '20%'}}>
+          <h1>Rightbar</h1>
           </div>
       </div>
     </BrowserRouter>
