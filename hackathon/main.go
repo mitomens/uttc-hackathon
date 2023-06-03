@@ -57,7 +57,7 @@ type GoodGet struct {
 }
 
 type GoodPut struct {
-	CommentId string `json:"id"`
+	CommentId string `json:"commentid"`
 	Good      int    `json:"good"`
 }
 
