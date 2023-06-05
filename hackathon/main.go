@@ -77,16 +77,11 @@ type ReplyPost struct {
 var db *sql.DB
 
 func init() {
-	// DB接続のための準備
-	//mysqlUser := os.Getenv("MYSQL_USER")
-	//mysqlPassword := os.Getenv("MYSQL_PWD")
-	//mysqlHost := os.Getenv("MYSQL_HOST")
-	//mysqlDatabase := os.Getenv("MYSQL_DATABASE")
-
-	mysqlUser := "test_user"
-	mysqlPassword := "password"
-	mysqlHost := "(localhost:3306)"
-	mysqlDatabase := "test_database"
+	//DB接続のための準備
+	mysqlUser := os.Getenv("MYSQL_USER")
+    mysqlPassword := os.Getenv("MYSQL_PWD")
+    mysqlHost := os.Getenv("MYSQL_HOST")
+	mysqlDatabase := os.Getenv("MYSQL_DATABASE")
 
 	connStr := fmt.Sprintf("%s:%s@%s/%s", mysqlUser, mysqlPassword, mysqlHost, mysqlDatabase)
 	_db, err := sql.Open("mysql", connStr)
