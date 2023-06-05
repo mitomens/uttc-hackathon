@@ -1,9 +1,11 @@
+
 import React, { useState, useEffect } from "react";
 import "./Channel.css";
 import { fireAuth } from "../firebase";
 
 import { onAuthStateChanged } from "firebase/auth";
 import Modal from 'react-modal';
+
 
 
 
@@ -20,9 +22,6 @@ function Channel() {
     good: number;
   };
 
-  interface Good {
-    good: number;
-  };
 
 
 
@@ -40,9 +39,15 @@ function Channel() {
   const [comment, setComment] = useState<string>("");
   const [comments, setComments] = useState<Comment[]>([]);
 
+  const [editId, setEditId] = useState<string>("");
   const [isEditing, setIsEditing] = useState<boolean>(false);
   const [editComment, setEditComment] = useState<string>("");
-
+  const [replyId, setReplyId] = useState<string>("");
+  const [isReplying, setIsReplying] = useState<boolean>(false);
+  const [replyidComment, setReplyidComment] = useState<string>("");
+  const [replyidUser, setReplyidUser] = useState<string>("");
+  const [replyComment, setReplyComment] = useState<string>("");
+  const [replys, setReplys] = useState<Comment[]>([]);
 
   const fetchUsers = async () => {
     try {
@@ -58,6 +63,22 @@ function Channel() {
       console.error(err);
     }
   };
+
+  const fetchReply = async (id:string) => {
+    try {
+      const res = await fetch(`https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/reply?channelid=00000000000000000000000001&&commentid=${id}`);
+      if (!res.ok) {
+        throw Error(`Failed to fetch users: ${res.status}`);
+      }
+
+      const replys = await res.json();
+      setReplys(replys);
+      console.log(replys);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -91,11 +112,11 @@ function Channel() {
             if (!res.ok) {
                 throw Error(`Failed to fetch users: ${res.status}`);
             }
-            const good:Good = await res.json();
-            const good2:number = good.good + 1;
+            const good = await res.json();
+            const good2:number = good[0].good + 1;
             console.log(good);
             const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/good", {
-                method: "POST",
+                method: "PATCH",
                 body: JSON.stringify({
                     commentid: id,
                     good: good2,
@@ -128,7 +149,7 @@ function Channel() {
         <div className="item" key={comment.id}>
           <p>user:{comment.username}</p>
           {isEditing && comment.userid === loginUser?.uid ? (
-            <Modal
+            <Modal 
             isOpen={isEditing}
             onRequestClose={() => setIsEditing(false)}
             contentLabel="Edit Comment"
@@ -140,12 +161,9 @@ function Channel() {
                 e.preventDefault();
                 try {
                     const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/channel", {
-                    method: "PUT",
+                    method: "PATCH",
                     body: JSON.stringify({
-                        id: comment.id,
-                        channelid: comment.channelid,
-                        userid: comment.userid,
-                        username: comment.username,
+                        id: editId,
                         comment: editComment+"(編集済み)",
                     }),
                     });
@@ -173,23 +191,84 @@ function Channel() {
             <p>comment:{comment.comment}</p>
             )}
             {comment.userid ===  loginUser?.uid && (
-              <p onClick={() => {
+              <button onClick={() => {
+                setEditId(comment.id);
                 setEditComment(comment.comment);
                 setIsEditing(true);
-            }}>編集</p>
+            }}>編集</button>
             )}
-          <p>comment:{comment.comment}</p>
           <button
             onClick={() => {
                 fetchGood(comment.id);
             }}
             >
             good
-            </button>
+          </button>
+          <p>
+          {comment.good}
+          </p>
+          {isReplying && (
+            <Modal 
+            isOpen={isReplying}
+            onRequestClose={() => setIsReplying(false)}
+            contentLabel="Reply Comment"
+            >
+            <h2>Reply Comment</h2>
+            <h3>返信先:{replyidUser}</h3>
+            <h3>返信内容:{replyidComment}</h3>
             <p>
-            {comment.good}</p>
-          <p>reply</p>{/*ここに返信ボタンを作る*/}
-          <p>編集</p>{/*ここに編集ボタンを作る*/}
+            {replys.map((reply) => (
+              <div className="item" key={reply.id}>
+                <p>user:{reply.username}</p>
+                <p>comment:{reply.comment}</p>
+                <p>good:{reply.good}</p>
+              </div>
+            ))}
+            </p>
+            <form
+                style={{ display: "flex", flexDirection: "column" }}
+                onSubmit={async (e) => {
+                e.preventDefault();
+                try {
+                    const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/reply", {
+                    method: "POST",
+                    body: JSON.stringify({
+                        channelid: "00000000000000000000000001",
+                        commentid: replyId,
+                        userid: loginUser?.uid,
+                        username: loginUser?.displayName,
+                        comment: replyComment,
+                    }),
+                    });
+                    if (!result.ok) {
+                    throw Error(`Failed to create user: ${result.status}`);
+                    }
+                    setReplyComment("");
+                    setIsReplying(false);
+                    fetchUsers();//ここで再度データを取得している
+                    console.log(result);
+                } catch (err) {
+                    console.error(err);
+                }
+                }}>
+                <label>Comment: </label>
+                <input
+                type={"text"}
+                value={replyComment}
+                onChange={(e) => setReplyComment(e.target.value)}
+                ></input>
+                <button type={"submit"}>reply</button>
+                </form>
+                <button onClick={() => setIsReplying(false)}>cancel</button>
+            </Modal>
+            ) }
+            <button onClick={() => {
+              setReplyId(comment.id);
+              setReplyidUser(comment.username);
+              setReplyidComment(comment.comment);
+              setIsReplying(true);
+              fetchReply(comment.id);
+            }}>返信</button>
           <p>delete</p>{/*ここに削除ボタンを作る*/}
         </div>
       ))}

@@ -1,3 +1,4 @@
+
 package main
 
 import (
@@ -52,11 +53,8 @@ type CommentPost struct {
 	Comment   string `json:"comment"`
 }
 type CommentPut struct {
-	Id        string `json:"id"`
-	ChannelId string `json:"channelid"`
-	UserId    string `json:"userid"`
-	UserName  string `json:"username"`
-	Comment   string `json:"comment"`
+	Id      string `json:"id"`
+	Comment string `json:"comment"`
 }
 
 type GoodGet struct {
@@ -67,15 +65,22 @@ type GoodPut struct {
 	CommentId string `json:"commentid"`
 	Good      int    `json:"good"`
 }
+type ReplyPost struct {
+	ChannelId string `json:"channelid"`
+	CommentId string `json:"commentid"`
+	UserId    string `json:"userid"`
+	UserName  string `json:"username"`
+	Comment   string `json:"comment"`
+}
 
 // ① GoプログラムからMySQLへ接続
 var db *sql.DB
 
 func init() {
-	// DB接続のための準備
+	//DB接続のための準備
 	mysqlUser := os.Getenv("MYSQL_USER")
-	mysqlPassword := os.Getenv("MYSQL_PWD")
-	mysqlHost := os.Getenv("MYSQL_HOST")
+    mysqlPassword := os.Getenv("MYSQL_PWD")
+    mysqlHost := os.Getenv("MYSQL_HOST")
 	mysqlDatabase := os.Getenv("MYSQL_DATABASE")
 
 	connStr := fmt.Sprintf("%s:%s@%s/%s", mysqlUser, mysqlPassword, mysqlHost, mysqlDatabase)
@@ -308,12 +313,18 @@ func handler3(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func handler4(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "https://uttc-hackathon-tiu8.vercel.app")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, OPTIONS")
+
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 	switch r.Method {
 	case http.MethodGet:
-		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Access-Control-Allow-Origin", "https://uttc-hackathon-tiu8.vercel.app")
-		w.Header().Set("Access-Control-Allow-Credentials", "true")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
 
 		channelid := r.URL.Query().Get("channelid") // To be filled
 		if channelid == "" {
@@ -357,11 +368,6 @@ func handler4(w http.ResponseWriter, r *http.Request) {
 		w.Write(bytes)
 
 	case http.MethodPost:
-		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Access-Control-Allow-Origin", "https://uttc-hackathon-tiu8.vercel.app")
-		w.Header().Set("Access-Control-Allow-Credentials", "true")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-
 		entropy := rand.New(rand.NewSource(time.Now().UnixNano()))
 		ms := ulid.Timestamp(time.Now())
 		Id, err := ulid.New(ms, entropy)
@@ -419,12 +425,7 @@ func handler4(w http.ResponseWriter, r *http.Request) {
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(s)
-	case http.MethodPut:
-		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Access-Control-Allow-Origin", "https://uttc-hackathon-tiu8.vercel.app")
-		w.Header().Set("Access-Control-Allow-Credentials", "true")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-
+	case http.MethodPatch:
 		var body CommentPut
 
 		if e := json.NewDecoder(r.Body).Decode(&body); e != nil {
@@ -438,14 +439,15 @@ func handler4(w http.ResponseWriter, r *http.Request) {
 			log.Printf("fail: Comment is null")
 			return
 		}
+		fmt.Println(body.Id)
 		tx, err := db.Begin()
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			log.Printf("fail: Begin, %v\n", err)
 			return
 		}
-		query := "UPDATE commentdb SET comment = ? WHERE id = ?"
-		_, er := tx.Exec(query, body.Id)
+		//query := "UPDATE commentdb SET comment = ? WHERE id = ?"
+		_, er := tx.Exec("UPDATE commentdb SET comment = ? WHERE id = ?", body.Comment, body.Id)
 		if er != nil {
 			tx.Rollback()
 			if err := tx.Rollback(); err != nil {
@@ -482,20 +484,25 @@ func handler4(w http.ResponseWriter, r *http.Request) {
 	}
 }
 func handler5(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "https://uttc-hackathon-tiu8.vercel.app")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, OPTIONS")
+
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
 	switch r.Method {
 	case http.MethodGet:
-		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Access-Control-Allow-Origin", "https://uttc-hackathon-tiu8.vercel.app")
-		w.Header().Set("Access-Control-Allow-Credentials", "true")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
-
 		commentid := r.URL.Query().Get("commentid") // To be filled
 		if commentid == "" {
 			log.Println("fail: commentid err")
 			w.WriteHeader(http.StatusBadRequest)
 			return
 		}
-
+		log.Printf(commentid)
 		// ②-2
 		rows, err := db.Query("SELECT good FROM commentdb WHERE id = ?", commentid)
 		if err != nil {
@@ -530,11 +537,7 @@ func handler5(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write(bytes)
 
-	case http.MethodPost:
-		w.Header().Set("Content-Type", "application/json")
-		w.Header().Set("Access-Control-Allow-Origin", "https://uttc-hackathon-tiu8.vercel.app")
-		w.Header().Set("Access-Control-Allow-Credentials", "true")
-		w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	case http.MethodPatch:
 
 		var body GoodPut
 
@@ -543,6 +546,7 @@ func handler5(w http.ResponseWriter, r *http.Request) {
 			log.Printf("fail: json.Decoder.Decode, %v\n", e)
 			return
 		}
+		log.Printf(string(body.Good))
 
 		if body.CommentId == "" {
 			w.WriteHeader(http.StatusBadRequest)
@@ -592,7 +596,133 @@ func handler5(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+func handler6(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	w.Header().Set("Access-Control-Allow-Origin", "https://uttc-hackathon-tiu8.vercel.app")
+	w.Header().Set("Access-Control-Allow-Credentials", "true")
+	w.Header().Set("Access-Control-Allow-Headers", "Content-Type")
+	w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, PATCH, OPTIONS")
 
+	if r.Method == "OPTIONS" {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+	switch r.Method {
+	case http.MethodGet:
+
+		channelid := r.URL.Query().Get("channelid") // To be filled
+		if channelid == "" {
+			log.Println("fail: name err")
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		commentid := r.URL.Query().Get("commentid") // To be filled
+		if commentid == "" {
+			log.Println("fail: name err")
+			w.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		// ②-2
+		rows, err := db.Query("SELECT id, channelid, userid, username, comment, good FROM replydb WHERE channelid = ? AND commentid = ?", channelid, commentid)
+		if err != nil {
+			log.Printf("fail: db.Query, %v\n", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+
+		// ②-3
+		comments := make([]CommentGet, 0)
+		for rows.Next() {
+			var u CommentGet
+			if err := rows.Scan(&u.Id, &u.ChannelId, &u.UserId, &u.UserName, &u.Comment, &u.Good); err != nil {
+				log.Printf("fail: rows.Scan, %v\n", err)
+
+				if err := rows.Close(); err != nil { // 500を返して終了するが、その前にrowsのClose処理が必要
+					log.Printf("fail: rows.Close(), %v\n", err)
+				}
+				w.WriteHeader(http.StatusInternalServerError)
+				return
+			}
+			comments = append(comments, u)
+		}
+
+		// ②-4
+		bytes, err := json.Marshal(comments)
+		if err != nil {
+			log.Printf("fail: json.Marshal, %v\n", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(bytes)
+
+	case http.MethodPost:
+		entropy := rand.New(rand.NewSource(time.Now().UnixNano()))
+		ms := ulid.Timestamp(time.Now())
+		Id, err := ulid.New(ms, entropy)
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("fail: ulid, %v\n", err)
+			return
+		}
+
+		var body ReplyPost
+
+		if e := json.NewDecoder(r.Body).Decode(&body); e != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("fail: json.Decoder.Decode, %v\n", err)
+			return
+		}
+
+		if body.Comment == "" {
+			w.WriteHeader(http.StatusBadRequest)
+			log.Printf("fail: Comment, %v\n", err)
+			return
+		}
+		tx, err := db.Begin()
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("fail: Begin, %v\n", err)
+			return
+		}
+		query := "INSERT INTO replydb(id, channelid, commentid, userid, username, comment, good ) VALUE(?, ?, ?, ?, ?, ?, ?)"
+		_, er := tx.Exec(query, Id.String(), body.ChannelId, body.CommentId, body.UserId, body.UserName, body.Comment, 0)
+		if er != nil {
+			tx.Rollback()
+			if err := tx.Rollback(); err != nil {
+				log.Printf("fail: tx.Rollback, %v\n", err)
+			}
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("fail: Exec, %v\n", er)
+			return
+		}
+
+		if err := tx.Commit(); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			log.Printf("fail: Commit, %v\n", err)
+			return
+		}
+
+		//成功したら
+		w.WriteHeader(http.StatusOK)
+		p := CommentId{Id: Id.String()}
+		s, err := json.Marshal(p)
+		if err != nil {
+			log.Printf("fail: json.Marshal, %v\n", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "application/json")
+		w.Write(s)
+
+	default:
+		log.Printf("fail: HTTP Method is %s\n", r.Method)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+}
 func main() {
 	// ② /userでリクエストされたらnameパラメーターと一致する名前を持つレコードをJSON形式で返す
 	http.HandleFunc("/user", handler)
@@ -600,6 +730,7 @@ func main() {
 	http.HandleFunc("/allchannels", handler3)
 	http.HandleFunc("/channel", handler4)
 	http.HandleFunc("/good", handler5)
+	http.HandleFunc("/reply", handler6)
 
 	// ③ Ctrl+CでHTTPサーバー停止時にDBをクローズする
 	closeDBWithSysCall()
