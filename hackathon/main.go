@@ -975,7 +975,7 @@ func handler7(w http.ResponseWriter, r *http.Request) {
 		log.Println(userid)
 
 		// ②-2
-		rows, err := db.Query("SELECT id, name, icon FROM user WHERE id = ?", userid)
+		rows, err := db.Query("SELECT id, name, icon FROM userdb WHERE id = ?", userid)
 		if err != nil {
 			log.Printf("fail: db.Query, %v\n", err)
 			w.WriteHeader(http.StatusInternalServerError)
@@ -1028,7 +1028,7 @@ func handler7(w http.ResponseWriter, r *http.Request) {
 			log.Printf("fail: Begin, %v\n", err)
 			return
 		}
-		query := "INSERT INTO user(id, name, icon ) VALUE(?, ?, ?)"
+		query := "INSERT INTO userdb(id, name, icon ) VALUE(?, ?, ?)"
 		_, er := tx.Exec(query, body.Id, body.Name, body.Icon)
 		if er != nil {
 			tx.Rollback()
@@ -1079,7 +1079,7 @@ func handler7(w http.ResponseWriter, r *http.Request) {
 			log.Printf("fail: Begin, %v\n", err)
 			return
 		}
-		_, er := tx.Exec("UPDATE user SET name = ? WHERE id = ?", body.Name, body.Id)
+		_, er := tx.Exec("UPDATE userdb SET name = ? WHERE id = ?", body.Name, body.Id)
 		if er != nil {
 			tx.Rollback()
 			if err := tx.Rollback(); err != nil {
@@ -1150,7 +1150,7 @@ func handler7(w http.ResponseWriter, r *http.Request) {
 			log.Printf("fail: Begin, %v\n", err)
 			return
 		}
-		_, er := tx.Exec("UPDATE user SET icon = ? WHERE id = ?", body.Icon, body.Id)
+		_, er := tx.Exec("UPDATE userdb SET icon = ? WHERE id = ?", body.Icon, body.Id)
 		if er != nil {
 			tx.Rollback()
 			if err := tx.Rollback(); err != nil {
