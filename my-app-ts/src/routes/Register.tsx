@@ -35,6 +35,7 @@ const Register = () => {
     if (currentUser) {
       setUserId(currentUser.uid);
       console.log(userId);
+      console.log(currentUser.uid);
   
       try {
         const result = await fetch(
