@@ -9,11 +9,6 @@ import { fireAuth } from "../firebase";
 import { Navigate, Link } from "react-router-dom";
 import { Avatar } from '@mantine/core';
 
-
-const [registerEmail, setRegisterEmail] = useState<string>("");
-const [registerPassword, setRegisterPassword] = useState<string>("");
-const [userId, setUserId] = useState<string | undefined>("");
-
 const Register = () => {
   const [registerEmail, setRegisterEmail] = useState<string>("");
   const [registerPassword, setRegisterPassword] = useState<string>("");
@@ -63,8 +58,6 @@ const Register = () => {
     }
   };
   
-
-
   const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
