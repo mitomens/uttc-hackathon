@@ -52,7 +52,7 @@ const Sidebar = () => {
 
   const fetchChannels = async () => {
     try {
-      const res = await fetch("https://uttc-hackathon-tiu8.vercel.app/allchannels");
+      const res = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/allchannels");
       if (!res.ok) {
         throw Error(`Failed to fetch users: ${res.status}`);
       }
@@ -80,7 +80,7 @@ const Sidebar = () => {
   const handleAddChannel = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
-      const result = await fetch("https://uttc-hackathon-tiu8.vercel.app/allchannels", {
+      const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/allchannels", {
         method: "POST",
         body: JSON.stringify({
           name: channelName,

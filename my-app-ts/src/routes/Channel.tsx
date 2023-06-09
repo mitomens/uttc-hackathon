@@ -70,7 +70,7 @@ function Channel() {
 
   const fetchComments = async () => {
     try {
-      const res = await fetch(`https://uttc-hackathon-tiu8.vercel.app/channel?channelid=${channelId}`);
+      const res = await fetch(`https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/channel?channelid=${channelId}`);
       if (!res.ok) {
         throw Error(`Failed to fetch users: ${res.status}`);
       }
@@ -85,7 +85,7 @@ function Channel() {
 
   const fetchReply = async (id:string) => {
     try {
-      const res = await fetch(`https://uttc-hackathon-tiu8.vercel.app/reply?channelid=${channelId}&&commentid=${id}`);
+      const res = await fetch(`https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/reply?channelid=${channelId}&&commentid=${id}`);
       if (!res.ok) {
         throw Error(`Failed to fetch users: ${res.status}`);
       }
@@ -129,7 +129,7 @@ function Channel() {
     }
   
     try {
-      const result = await fetch("https://uttc-hackathon-tiu8.vercel.app/channel", {
+      const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/channel", {
         method: "POST",
         body: JSON.stringify({
           channelid: channelId,
@@ -159,14 +159,14 @@ function Channel() {
 //ここからgoodの処理
   const fetchGood = async (id: string) => {  
         try {
-            const res = await fetch(`https://uttc-hackathon-tiu8.vercel.app/good?commentid=${id}`);
+            const res = await fetch(`https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/good?commentid=${id}`);
             if (!res.ok) {
                 throw Error(`Failed to fetch users: ${res.status}`);
             }
             const good = await res.json();
             const good2:number = good[0].good + 1;
             console.log(good);
-            const result = await fetch("https://uttc-hackathon-tiu8.vercel.app/good", {
+            const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/good", {
                 method: "PATCH",
                 body: JSON.stringify({
                     commentid: id,
@@ -185,14 +185,14 @@ function Channel() {
 
   const fetchGoodReply = async (id: string) => {
     try {
-        const res = await fetch(`https://uttc-hackathon-tiu8.vercel.app/good?replyid=${id}`);
+        const res = await fetch(`https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/good?replyid=${id}`);
         if (!res.ok) {
             throw Error(`Failed to fetch users: ${res.status}`);
         }
         const good = await res.json();
         const good2:number = good[0].good + 1;
         console.log(good);
-        const result = await fetch("https://uttc-hackathon-tiu8.vercel.app/good", {
+        const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/good", {
             method: "PUT",
             body: JSON.stringify({
                 replyid: id,
@@ -211,7 +211,7 @@ function Channel() {
 
 const fetchDelete = async (id: string) => {
   try {
-      const result = await fetch(`https://uttc-hackathon-tiu8.vercel.app/channel?commentid=${id}`, {
+      const result = await fetch(`https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/channel?commentid=${id}`, {
           method: "DELETE",
       });
       if (!result.ok) {
@@ -226,7 +226,7 @@ const fetchDelete = async (id: string) => {
 
 const fetchDeleteReply = async (id: string) => {
   try {
-      const result = await fetch(`https://uttc-hackathon-tiu8.vercel.app/channel?replyid=${id}`, {
+      const result = await fetch(`https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/channel?replyid=${id}`, {
           method: "DELETE",
       });
       if (!result.ok) {
@@ -243,7 +243,7 @@ const fetchDeleteReply = async (id: string) => {
   const [user, setUser] = useState<User[]>([]);
   const fetchUserNameandIcon = async () => {
     try {
-      const res = await fetch(`https://uttc-hackathon-tiu8.vercel.app/edit?userid=${loginUser?.uid}`);
+      const res = await fetch(`https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/edit?userid=${loginUser?.uid}`);
       if (!res.ok) {
         throw Error(`Failed to fetch users: ${res.status}`);
       }
@@ -467,7 +467,7 @@ return (
               onSubmit={async (e) => {
                 e.preventDefault();
                 try {
-                  const result = await fetch(`https://uttc-hackathon-tiu8.vercel.app/channel?commentid=${editId}`, {
+                  const result = await fetch(`https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/channel?commentid=${editId}`, {
                     method: "PATCH",
                     body: JSON.stringify({
                       comment: editComment + "(編集済み)",
@@ -576,7 +576,7 @@ return (
               onSubmit={async (e) => {
                 e.preventDefault();
                 try {
-                  const result = await fetch("https://uttc-hackathon-tiu8.vercel.app/reply", {
+                  const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/reply", {
                     method: "POST",
                     body: JSON.stringify({
                       channelid: channelId,
@@ -646,7 +646,7 @@ return (
             onSubmit={async (e) => {
               e.preventDefault();
               try {
-                const result = await fetch(`https://uttc-hackathon-tiu8.vercel.app/channel?replyid=${editId}`, {
+                const result = await fetch(`https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/channel?replyid=${editId}`, {
                   method: "PATCH",
                   body: JSON.stringify({
                     comment: editComment + "(編集済み)",

@@ -27,7 +27,7 @@ const Register = () => {
     }
 
     try {
-        const result = await fetch("https://uttc-hackathon-tiu8.vercel.app/edit", {
+        const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/edit", {
             method: "POST",
             body: JSON.stringify({
             userid: fireAuth.currentUser?.uid,

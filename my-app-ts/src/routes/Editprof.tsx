@@ -67,7 +67,7 @@ function Editprof() {
 
   const fetchUserDatas = async () => {
     try {
-      const res = await fetch(`https://uttc-hackathon-tiu8.vercel.app/edit?userid=${loginUser?.uid}`);
+      const res = await fetch(`https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/edit?userid=${loginUser?.uid}`);
       if (!res.ok) {
         throw Error(`Failed to fetch users: ${res.status}`);
       }
@@ -83,7 +83,7 @@ function Editprof() {
   const handleNameChange = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
       try {
-          const result = await fetch("https://uttc-hackathon-tiu8.vercel.app/edit", {
+          const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/edit", {
           method: "PUT",
            body: JSON.stringify({
               userid: loginUser?.uid,
@@ -131,7 +131,7 @@ function Editprof() {
       const url = await getDownloadURL(imageRef);
       
       // ユーザー情報を更新する
-      const result = await fetch("https://uttc-hackathon-tiu8.vercel.app/edit", {
+      const result = await fetch("https://uttc-hackathon2-dbofxfl7wq-uc.a.run.app/edit", {
         method: "PATCH",
         body: JSON.stringify({
           userid: loginUser?.uid,
