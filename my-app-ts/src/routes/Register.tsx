@@ -62,7 +62,7 @@ const Register = () => {
   }, []);
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: "#3c99cd", backgroundSize: "cover", height: "100vh", width: "100vw" }}>
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: "black", backgroundSize: "cover", height: "100vh", width: "100vw" }}>
       {user ? (
         <Navigate to={`/`} />
       ) : (
