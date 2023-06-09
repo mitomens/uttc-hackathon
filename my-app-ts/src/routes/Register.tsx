@@ -32,7 +32,7 @@ const Register = () => {
             body: JSON.stringify({
             userid: fireAuth.currentUser?.uid,
             name: "no name",
-            icon: "https://renote.net/files/blobs/proxy/eyJfcmFpbHMiOnsibWVzc2FnZSI6IkJBaHBBMGdhSUE9PSIsImV4cCI6bnVsbCwicHVyIjoiYmxvYl9pZCJ9fQ==--7f5ee05bb7008f18830a3c495181c81c9b1eeada/1636062031.jpg",
+            icon: "https://firebasestorage.googleapis.com/v0/b/term3-keito-mitome.appspot.com/o/aikonnnasi.jpeg?alt=media&token=3750b10b-52d4-479d-a79e-e48bb6f1a20e&_gl=1*yp7g36*_ga*MTI1Nzc5ODgwMy4xNjg1NjQ1MDI3*_ga_CW55HF8NVT*MTY4NjMxOTc2OC4xNi4xLjE2ODYzMTk3OTUuMC4wLjA.",
             }),
         });
         if (!result.ok) {
