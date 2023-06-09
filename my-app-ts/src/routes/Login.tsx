@@ -1,59 +1,81 @@
-import { signInWithPopup, GoogleAuthProvider, signOut, AuthError, UserCredential, onAuthStateChanged  } from "firebase/auth";
+import React, { useState, useEffect, FC  } from "react";
+import {
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  User
+} from "firebase/auth";
 import { fireAuth } from "../firebase";
-import React, { FC, useState } from 'react';
+/* 「Link」をimport↓ */
+import { Navigate, Link } from "react-router-dom";
+import { Avatar } from '@mantine/core';
 
-export const LoginForm: FC = () => {
-  /**
-   * googleでログインする
-   */
-  const signInWithGoogle = (): void => {
-    // Google認証プロバイダを利用する
-    const provider = new GoogleAuthProvider();
 
-    // ログイン用のポップアップを表示
-    signInWithPopup(fireAuth, provider)
-      .then((res: UserCredential) => {
-        const user = res.user;
-        alert("ログインユーザー: " + user.displayName);
-      })
-      .catch((err: AuthError) => {
-        const errorMessage = err.message;
-        alert(errorMessage);
-      });
+
+
+const Login = () => {
+  const [loginEmail, setLoginEmail] = useState<string>("");
+  const [loginPassword, setLoginPassword] = useState<string>("");
+
+  const handleSubmit = async (e:React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    try {
+      await signInWithEmailAndPassword(
+        fireAuth,
+        loginEmail,
+        loginPassword
+      );
+    } catch(error) {
+      alert("メールアドレスまたはパスワードが間違っています");
+    }
   };
 
-  /**
-   * ログアウトする
-   */
-  const signOutWithGoogle = (): void => {
-    signOut(fireAuth).then(() => {
-      alert("ログアウトしました");
-    }).catch((err: AuthError) => {
-      alert(err.message);
+  const [user, setUser] = useState<User | null>(null);
+
+  useEffect(() => {
+    onAuthStateChanged(fireAuth, (currentUser) => {
+      setUser(currentUser);
     });
-  };
+  });
 
   return (
-    <div>
-      <button onClick={signInWithGoogle}>
-        Googleでログイン
-      </button>
-      <button onClick={signOutWithGoogle}>
-        ログアウト
-      </button>
-    </div>
-  );
-};
-
-
-
-function Login(){
-    return (
-        <div>
-        <h1>ログイン</h1>
-        <LoginForm />
+    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background:"#3c99cd", backgroundSize: "cover", height: "100vh", width: "100vw" }}>
+    {user ? (
+      <Navigate to={`/`} />
+    ) : (
+      <div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start'}}>
+          <Avatar radius="lg" size="lg" src="https://firebasestorage.googleapis.com/v0/b/term3-keito-mitome.appspot.com/o/ShareU-logos.jpeg?alt=media&token=cd6f6fd3-fe80-401f-939f-fcf28c3a58ba&_gl=1*ay5u3m*_ga*MTI1Nzc5ODgwMy4xNjg1NjQ1MDI3*_ga_CW55HF8NVT*MTY4NjI5MzMyNS4xMy4xLjE2ODYyOTMzNjQuMC4wLjA." alt="Logo" style={{ width: '300px', height: '300px' }} />
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginLeft:"100px"}}>
+          <h1 style={{ color: "white" }}>ログイン</h1>
+          <form onSubmit={handleSubmit}>
+            <div>
+              <label style={{ color: "white" }}>メールアドレス</label>
+              <input
+                name="email"
+                type="email"
+                value={loginEmail}
+                onChange={(e) => setLoginEmail(e.target.value)}
+              />
+            </div>
+            <div>
+              <label style={{ color: "white" }}>パスワード</label>
+              <input
+                name="password"
+                type="password"
+                value={loginPassword}
+                onChange={(e) => setLoginPassword(e.target.value)}
+              />
+            </div>
+            <button style={{ background: "linear-gradient(135deg, #8a2be2, #ff8c00)" }}>ログイン</button>
+            <p style={{ color: "white" }}>新規登録は<Link to={`/Register`} style={{ color: "white" }}>こちら</Link></p>
+          </form>
         </div>
-    );
+      </div>
+    </div>
+    )}
+</div>
+  );
 }
 
 export default Login;
