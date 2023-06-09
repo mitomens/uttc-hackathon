@@ -215,8 +215,8 @@ function Main() {
           )}
           <div className="Main" style={{ width: loginUser ? '75%' : '100%', marginLeft: loginUser ? '25%' : '0' }}>
             <Routes>
-              <Route path="/" element={<Login />} />{/*Login画面*/}
-              <Route path="/register" element={<Register />} />{/*新規登録画面*/}
+              <Route path="/" element={loginUser ? <Editprof /> : <Login />} />{/*Login画面*/}
+              <Route path="/register" element={loginUser ? <Editprof /> : <Register />} />{/*新規登録画面*/}
               <Route path="/Login" element={loginUser ? <Editprof />  : <Login />} />
               <Route path="/edit-profile" element={loginUser ? <Editprof />  : <Navigate to="/Login" />} />{/*プロフィール編集画面*/}
               <Route path="/channel" element={loginUser ? <Channel />  : <Navigate to="/Login" />} />{/*チャンネル画面*/}
