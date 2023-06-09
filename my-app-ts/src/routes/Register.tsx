@@ -38,9 +38,9 @@ const Register = () => {
           {
             method: "POST",
             body: JSON.stringify({
-              userid: currentUser.uid,
-              name: "no name",
-              icon: "https://firebasestorage.googleapis.com/v0/b/term3-keito-mitome.appspot.com/o/aikonnnasi.jpeg?alt=media&token=3750b10b-52d4-479d-a79e-e48bb6f1a20e&_gl=1*yp7g36*_ga*MTI1Nzc5ODgwMy4xNjg1NjQ1MDI3*_ga_CW55HF8NVT*MTY4NjMxOTc2OC4xNi4xLjE2ODYzMTk3OTUuMC4wLjA.",
+            userid: currentUser.uid,
+            name: "no name",
+            icon: "https://firebasestorage.googleapis.com/v0/b/term3-keito-mitome.appspot.com/o/aikonnnasi.jpeg?alt=media&token=3750b10b-52d4-479d-a79e-e48bb6f1a20e&_gl=1*yp7g36*_ga*MTI1Nzc5ODgwMy4xNjg1NjQ1MDI3*_ga_CW55HF8NVT*MTY4NjMxOTc2OC4xNi4xLjE2ODYzMTk3OTUuMC4wLjA.",
             }),
           }
         );

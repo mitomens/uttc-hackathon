@@ -124,6 +124,9 @@ function Editprof() {
       await Promise.all(uploads);
   
       alert('アップロード完了');
+
+      console.log(file[0].name)
+      console.log(loginUser?.uid)
   
       // 最初の画像のURLを取得する
       const imagePath = 'form-uploaded/' + file[0].name;
