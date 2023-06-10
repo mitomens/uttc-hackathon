@@ -135,7 +135,7 @@ const Sidebar = () => {
         ))}
         <div>
       {/* チャンネル追加ボタン */}
-      <button onClick={() => setIsModalOpen(true)} style={{marginLeft:"20px", background:"#d4dcde", borderRadius:"0"}}>＋チャンネル追加</button>
+      <button onClick={() => setIsModalOpen(true)} style={{marginLeft:"20px", background:"#d4dcde", borderRadius:"5px"}}>＋チャンネル追加</button>
       <div >
         <Modal
         isOpen={isModalOpen}
@@ -176,9 +176,9 @@ const Sidebar = () => {
         </div>
       </Link>
       {loginUser && (
-    <ul>
+    <div>
       <button onClick={logout} className="logoutbutton"><FontAwesomeIcon icon={faSignOutAlt} />ログアウト</button>
-    </ul>
+    </div>
   )}
     </nav>
   );
