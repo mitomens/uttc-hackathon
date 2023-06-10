@@ -367,7 +367,7 @@ return (
 
 
 
-      <div className="comment-container"style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div className="comment-container">
         <form style={{ display: "flex", flexDirection: "row" }} onSubmit={onSubmit}>
           <label style={{marginRight:"5px"}}>Comment: </label>
           <textarea
@@ -601,7 +601,7 @@ return (
                 }
               }}
             >
-              <label>Comment: </label>
+              <label style={{marginRight:"5px"}}>Comment: </label>
               <textarea
                 rows={1}
                 value={replyComment}
