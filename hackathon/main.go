@@ -1,20 +1,19 @@
-
 package main
 
 import (
-"database/sql"
-"encoding/json"
-"fmt"
-_ "github.com/go-sql-driver/mysql"
-ulid "github.com/oklog/ulid/v2"
-"log"
-"math/rand"
-"net/http"
-"os"
-"os/signal"
-"syscall"
-"time"
-_ "time/tzdata"
+	"database/sql"
+	"encoding/json"
+	"fmt"
+	_ "github.com/go-sql-driver/mysql"
+	ulid "github.com/oklog/ulid/v2"
+	"log"
+	"math/rand"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+	_ "time/tzdata"
 )
 
 type UserResForHTTPGet struct {
@@ -502,8 +501,10 @@ func handler4(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		t := time.Now()
-		formattedTime := t.Format("01/02 15:04")
+		nowUTC := time.Now().UTC()
+		jst := time.FixedZone("Asia/Tokyo", 9*60*60)
+		nowJST := nowUTC.In(jst)
+		formattedTime := nowJST.Format("01/02 15:04")
 
 		query := "INSERT INTO commentdb(id, channelid, userid, username, comment, good, icon, datetime, photo) VALUE(?, ?, ?, ?, ?, ?, ?, ?, ?)"
 		_, er := tx.Exec(query, Id.String(), body.ChannelId, body.UserId, body.UserName, body.Comment, 0, body.Icon, formattedTime, body.Photo)
@@ -1244,13 +1245,3 @@ func closeDBWithSysCall() {
 		os.Exit(0)
 	}()
 }
-
-
-
-
-
-
-
-
-
-
