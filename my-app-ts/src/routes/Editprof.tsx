@@ -2,7 +2,7 @@ import React, { useState, useEffect} from 'react';
 import Modal from 'react-modal';
 import { fireAuth , storage} from "../firebase";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-
+import {Avatar} from '@mantine/core';
 import { onAuthStateChanged } from "firebase/auth";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilAlt, faCamera } from '@fortawesome/free-solid-svg-icons';
@@ -183,7 +183,7 @@ function Editprof() {
           <FontAwesomeIcon icon={faPencilAlt} />名前を編集
         </button>
         <h2 style={{ fontSize: '20px', marginTop: '20px', marginBottom:'20px'}}>アイコン</h2>
-        <img src={icon} style={{ width: '200px', height: '200px', borderRadius: '50%',border:"1px solid black"}} />
+        <Avatar radius="xl" size="lg" src={icon} style={{ width: '200px', height: '200px', border:"1px solid black"}} />
         <button onClick={() => { setIsEditIconOpen(true) }} style={{ marginTop:"20px"}}>
           <FontAwesomeIcon icon={faCamera} />画像を編集
         </button>
