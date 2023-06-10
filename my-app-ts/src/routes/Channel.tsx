@@ -370,12 +370,12 @@ return (
       <div className="comment-container">
         <form style={{ display: "flex", flexDirection: "row" }} onSubmit={onSubmit}>
           <label>Comment: </label>
-          <input
-            type={"text"}
+          <textarea
+            rows={1}
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            style={{ width: "80%", marginRight: "10px" }}
-          ></input>
+            style={{ width: "80%", marginRight: "10px", overflow: "hidden", resize: "none"}}
+          />
           <div className="flex" style={{marginRight:"10px"}}>
             {isImageSelected && (
               <div>
@@ -529,7 +529,7 @@ return (
               </div>
               <p>{replyidComment}</p>
               { replyidPhoto && (
-                <h3><img src={replyidPhoto} style={{width:"20%"}}/></h3>
+                <h3><img src={replyidPhoto} style={{width:"80%"}}/></h3>
               )}
             </div>
             <p>
