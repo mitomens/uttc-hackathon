@@ -11,7 +11,7 @@ import Modal from 'react-modal';
 import "./App.css";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCog } from '@fortawesome/free-solid-svg-icons';
-
+import { faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 
 
 type UserData = {
@@ -109,7 +109,7 @@ const Sidebar = () => {
     , []);//ここでデータを取得している
 
   return (
-    <nav style={{ flex:'1',padding: '16px', backgroundColor: "#3c99cd" }}>
+    <nav style={{ flex:'1',padding: '16px', backgroundColor: "#4a8d96" }}>
       <div style={{ display: 'flex', justifyContent: 'space-between',borderBottom: '1px solid #fff' }}>
   <div style={{ display: 'flex', alignItems: 'center' }}>
     <h1 style={{ fontSize: '45px', fontFamily: 'Georgia, serif', display: 'flex', alignItems: 'center' }}>
@@ -119,32 +119,23 @@ const Sidebar = () => {
   </div>
   <div style={{marginLeft:'auto'}}>
   <span style={{ fontWeight: '600'}}>v4.3.2</span>
-  {loginUser && (
-    <ul>
-      <button onClick={logout} className="logoutbutton">ログアウト</button>
-    </ul>
-  )}
   </div>
 </div>
 
       <div style={{ flexGrow: 1, overflowY: 'scroll', paddingTop: '32px', paddingBottom: '32px' }}>
         {channels.map((channel) => (
             <div className="item-channel" key={channel.id}>
-            <ul>
-            <li>
             <Link to={`/channel?channelId=${channel.id}&&channelName=${channel.name}`}>
-              <h2 style={{ display: 'flex', alignItems: 'center' }}>
+              <h2 style={{ display: 'flex', alignItems: 'center', background:"#d4dcde"}}>
                 {channel.name}
               </h2>
             </Link>
-            </li>
-            </ul>
             </div>
 
         ))}
         <div>
       {/* チャンネル追加ボタン */}
-      <button onClick={() => setIsModalOpen(true)} style={{marginLeft:"20px"}}>＋チャンネル追加</button>
+      <button onClick={() => setIsModalOpen(true)} style={{marginLeft:"20px", background:"#d4dcde"}}>＋チャンネル追加</button>
       <div >
         <Modal
         isOpen={isModalOpen}
@@ -184,6 +175,11 @@ const Sidebar = () => {
 
         </div>
       </Link>
+      {loginUser && (
+    <ul>
+      <button onClick={logout} className="logoutbutton"><FontAwesomeIcon icon={faSignOutAlt} />ログアウト</button>
+    </ul>
+  )}
     </nav>
   );
 }
