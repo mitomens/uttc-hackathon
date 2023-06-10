@@ -48,8 +48,8 @@ const Login = () => {
           <Avatar radius="lg" size="lg" src="https://firebasestorage.googleapis.com/v0/b/term3-keito-mitome.appspot.com/o/ShareU-logos.jpeg?alt=media&token=cd6f6fd3-fe80-401f-939f-fcf28c3a58ba&_gl=1*ay5u3m*_ga*MTI1Nzc5ODgwMy4xNjg1NjQ1MDI3*_ga_CW55HF8NVT*MTY4NjI5MzMyNS4xMy4xLjE2ODYyOTMzNjQuMC4wLjA." alt="Logo" style={{ width: '300px', height: '300px' }} />
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginLeft:"100px"}}>
           <h1 style={{ color: "white" }}>ログイン</h1>
-          <label style={{ color: "white" }}>メールアドレス</label>
           <form onSubmit={handleSubmit}>
+          <label style={{ color: "white" }}>メールアドレス</label>
             <div style={{width:"300px"}}>
               <input
                 name="email"
