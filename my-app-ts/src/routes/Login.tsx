@@ -65,6 +65,7 @@ const Login = () => {
                 type="password"
                 value={loginPassword}
                 onChange={(e) => setLoginPassword(e.target.value)}
+                style={{width:"200px"}}
               />
             </div>
             <button style={{ background: "linear-gradient(135deg, #8a2be2, #ff8c00)" }}>ログイン</button>

@@ -175,17 +175,17 @@ function Editprof() {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-      <h1 style={{ fontSize: '24px' }}>プロフィール</h1>
+      <header style={{ fontSize: '24px', background:"#d4dcde"}}>プロフィール</header>
       <div className="user" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <h2 style={{ fontSize: '20px' }}>名前:</h2>
-        <p style={{ fontSize: '18px' }}>{username}</p>
+        <h2 style={{ fontSize: '20px' }}>名前</h2>
+        <p style={{ fontSize: '30px' }}>{username}</p>
         <button onClick={() => { setName(username); setIsEditNameOpen(true) }}>
           <FontAwesomeIcon icon={faPencilAlt} />名前を編集
         </button>
-        <h2 style={{ fontSize: '20px', marginTop: '20px' }}>アイコン:</h2>
-        <Avatar radius="xl" size="xl" color="blue" src={icon} style={{ width: '200px', height: '200px' }} />
+        <h2 style={{ fontSize: '20px', marginTop: '20px', marginBottom:'20px'}}>アイコン</h2>
+        <Avatar radius="xl" size="xl" color="blue" src={icon} style={{ width: '200px', height: '200px', border:"1px solid black"}} />
         <button onClick={() => { setIsEditIconOpen(true) }}>
-          <FontAwesomeIcon icon={faCamera} />画像を編集
+          <FontAwesomeIcon icon={faCamera} style={{marginTop:"20px"}}/>画像を編集
         </button>
       </div>
       <Modal
