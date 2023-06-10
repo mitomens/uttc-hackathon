@@ -367,9 +367,9 @@ return (
 
 
 
-      <div className="comment-container">
+      <div className="comment-container"style={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
         <form style={{ display: "flex", flexDirection: "row" }} onSubmit={onSubmit}>
-          <label>Comment: </label>
+          <label style={{marginRight:"5px"}}>Comment: </label>
           <textarea
             rows={1}
             value={comment}
