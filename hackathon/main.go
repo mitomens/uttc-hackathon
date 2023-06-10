@@ -907,8 +907,10 @@ func handler6(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		t := time.Now()
-		formattedTime := t.Format("01/02 15:04")
+		nowUTC := time.Now().UTC()
+		jst := time.FixedZone("Asia/Tokyo", 9*60*60)
+		nowJST := nowUTC.In(jst)
+		formattedTime := nowJST.Format("01/02 15:04")
 
 		tx, err := db.Begin()
 		if err != nil {
