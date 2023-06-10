@@ -174,8 +174,9 @@ function Editprof() {
   }, [userData]);
 
   return (
+    <div>
+    <header style={{ fontSize: '24px', background:"#d4dcde", width:"100%"}}>プロフィール</header>
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-      <header style={{ fontSize: '24px', background:"#d4dcde"}}>プロフィール</header>
       <div className="user" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <h2 style={{ fontSize: '20px' }}>名前</h2>
         <p style={{ fontSize: '30px' }}>{username}</p>
@@ -183,9 +184,9 @@ function Editprof() {
           <FontAwesomeIcon icon={faPencilAlt} />名前を編集
         </button>
         <h2 style={{ fontSize: '20px', marginTop: '20px', marginBottom:'20px'}}>アイコン</h2>
-        <Avatar radius="xl" size="xl" color="blue" src={icon} style={{ width: '200px', height: '200px', border:"1px solid black"}} />
+        <Avatar radius="xl" size="lg" color="blue" src={icon} style={{ width: '200px', height: '200px', border:"1px solid black"}} />
         <button onClick={() => { setIsEditIconOpen(true) }}>
-          <FontAwesomeIcon icon={faCamera} style={{marginTop:"20px"}}/>画像を編集
+          <FontAwesomeIcon icon={faCamera} style={{paddingTop:"20px"}}/>画像を編集
         </button>
       </div>
       <Modal
@@ -222,6 +223,7 @@ function Editprof() {
           setProfileImage('default-profile.png');
         }}>Cancel</button>
       </Modal>
+    </div>
     </div>
   )
 }  

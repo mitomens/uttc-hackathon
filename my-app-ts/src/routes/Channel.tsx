@@ -477,6 +477,7 @@ return (
                     throw Error(`Failed to create user: ${result.status}`);
                   }
                   setIsEditing(false);
+                  removeModalOpenClass();
                   fetchComments(); //ここで再度データを取得している
                   console.log(result);
                 } catch (err) {
@@ -592,6 +593,7 @@ return (
                   }
                   setReplyComment("");
                   setIsReplying(false);
+                  removeModalOpenClass();
                   fetchComments(); //ここで再度データを取得している
                   console.log(result);
                 } catch (err) {
