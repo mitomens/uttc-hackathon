@@ -72,8 +72,8 @@ const Register = () => {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' , marginLeft:"100px"}}>
           <h1 style={{ color: "white" }}>新規登録</h1>
           <form onSubmit={handleSubmit}>
-            <div style={{width:"250px"}}>
-              <label style={{ color: "white" }}>メールアドレス</label>
+          <label style={{ color: "white" }}>メールアドレス</label>
+            <div style={{width:"300px"}}>
               <input
                 name="email"
                 type="email"
@@ -81,8 +81,8 @@ const Register = () => {
                 onChange={(e) => setRegisterEmail(e.target.value)}
               />
             </div>
-            <div style={{width:"250px"}}>
-              <label style={{ color: "white" }}>パスワード</label>
+            <label style={{ color: "white" }}>パスワード</label>
+            <div style={{width:"300px"}}>
               <input
                 name="password"
                 type="password"
@@ -90,7 +90,7 @@ const Register = () => {
                 onChange={(e) => setRegisterPassword(e.target.value)}
               />
             </div>
-            <button style={{  background: "linear-gradient(135deg, #8a2be2, #ff8c00)",width:"250px"}}>登録する</button>
+            <button style={{  background: "linear-gradient(135deg, #8a2be2, #ff8c00)",width:"300px"}}>登録する</button>
             {/* ↓リンクを追加 */}
             <p style={{ color: "white" }}>ログインは<Link to={`/login/`} style={{ color: "white" }}>こちら</Link></p>
           </form>
