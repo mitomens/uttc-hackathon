@@ -126,9 +126,11 @@ const Sidebar = () => {
         {channels.map((channel) => (
             <div className="item-channel" key={channel.id}>
             <Link to={`/channel?channelId=${channel.id}&&channelName=${channel.name}`}>
+              <div style={{background:"#d4dcde", width:"100%", height:"100%", borderRadius:"10px"}}>
               <h2 style={{ display: 'flex', alignItems: 'center', background:"#d4dcde"}}>
                 {channel.name}
               </h2>
+              </div>
             </Link>
             </div>
 
