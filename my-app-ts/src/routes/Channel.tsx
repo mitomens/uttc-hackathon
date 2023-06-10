@@ -529,7 +529,7 @@ return (
               </div>
               <p>{replyidComment}</p>
               { replyidPhoto && (
-                <h3><img src={replyidPhoto}/></h3>
+                <h3><img src={replyidPhoto} style={{width:"20%"}}/></h3>
               )}
             </div>
             <p>
