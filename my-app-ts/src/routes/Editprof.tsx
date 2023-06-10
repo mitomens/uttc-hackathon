@@ -174,9 +174,9 @@ function Editprof() {
 
   return (
     <div>
-    <header style={{ fontSize: '24px', background:"#d4dcde", width:"100%", textAlign:"center",height: "70px", font:"bold"}}>プロフィール</header>
+<header style={{ fontSize: '50px', background: "#d4dcde", width: "100%", textAlign: "center", height: "70px", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: "bold" }}>プロフィール</header>
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-      <div className="user" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop:"50px"}}>
+      <div className="user" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop:"30px"}}>
         <h2 style={{ fontSize: '30px', marginBottom:"5px"}}>名前</h2>
         <p style={{ fontSize: '40px', marginBottom:"15px" }}>{username}</p>
         <button onClick={() => { setName(username); setIsEditNameOpen(true) }}style={{marginBottom:"25px"}}>
