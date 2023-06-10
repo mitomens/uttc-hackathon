@@ -420,8 +420,8 @@ return (
               onClick={() => {
                 fetchDelete(editId);
                 setIsDeleting(false);
-              }
-              }
+              }}
+              style={{marginRight:"10px"}}
             >
               削除
             </button>

@@ -153,6 +153,7 @@ const Sidebar = () => {
               type="text"
               value={channelName}
               onChange={(e) => setChannelName(e.target.value)}
+              style={{marginLeft:"10px"}}
             />
           </label>
           <button type="submit">作成</button>
