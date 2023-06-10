@@ -174,15 +174,15 @@ function Editprof() {
 
   return (
     <div>
-    <header style={{ fontSize: '24px', background:"#d4dcde", width:"100%", textAlign:"center",height: "8%"}}>プロフィール</header>
+    <header style={{ fontSize: '24px', background:"#d4dcde", width:"100%", textAlign:"center",height: "20%", font:"bold"}}>プロフィール</header>
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-      <div className="user" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <h2 style={{ fontSize: '20px' }}>名前</h2>
-        <p style={{ fontSize: '30px' }}>{username}</p>
+      <div className="user" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginTop:"50px"}}>
+        <h2 style={{ fontSize: '30px' }}>名前</h2>
+        <p style={{ fontSize: '40px' }}>{username}</p>
         <button onClick={() => { setName(username); setIsEditNameOpen(true) }}>
           <FontAwesomeIcon icon={faPencilAlt} />名前を編集
         </button>
-        <h2 style={{ fontSize: '20px', marginTop: '20px', marginBottom:'20px'}}>アイコン</h2>
+        <h2 style={{ fontSize: '20px', marginTop: '40px', marginBottom:'20px'}}>アイコン</h2>
         <Avatar radius="xl" size="lg" src={icon} style={{ width: '200px', height: '200px',border:"1px solid black"}} />
         <button onClick={() => { setIsEditIconOpen(true) }} style={{ marginTop:"20px"}}>
           <FontAwesomeIcon icon={faCamera} />画像を編集
