@@ -49,7 +49,7 @@ const Login = () => {
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', marginLeft:"100px"}}>
           <h1 style={{ color: "white" }}>ログイン</h1>
           <form onSubmit={handleSubmit}>
-            <div style={{width:"200px"}}>
+            <div>
               <label style={{ color: "white" }}>メールアドレス</label>
               <input
                 name="email"
@@ -58,7 +58,7 @@ const Login = () => {
                 onChange={(e) => setLoginEmail(e.target.value)}
               />
             </div>
-            <div style={{width:"200px"}}>
+            <div>
               <label style={{ color: "white" }}>パスワード</label>
               <input
                 name="password"
