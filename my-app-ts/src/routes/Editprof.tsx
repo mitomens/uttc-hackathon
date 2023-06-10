@@ -1,6 +1,5 @@
 import React, { useState, useEffect} from 'react';
 import Modal from 'react-modal';
-import { Avatar } from '@mantine/core';
 import { fireAuth , storage} from "../firebase";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
