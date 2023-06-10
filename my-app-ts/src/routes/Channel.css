@@ -85,6 +85,7 @@
 .center-item .time {
   grid-area: time;
   justify-self: end;
+  color: rgba(0, 0, 0, 0.5);
 }
 
 .center-item .comment {
@@ -132,6 +133,7 @@
 .right-item .time {
   grid-area: time;
   justify-self: flex-end;
+  color: rgba(0, 0, 0, 0.5);
 }
 
 .right-item .comment {
