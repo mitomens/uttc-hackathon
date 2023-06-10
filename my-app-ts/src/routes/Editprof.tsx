@@ -1,9 +1,8 @@
 import React, { useState, useEffect} from 'react';
 import Modal from 'react-modal';
-import { Avatar } from '@mantine/core';
 import { fireAuth , storage} from "../firebase";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-
+import {Avatar} from '@mantine/core';
 import { onAuthStateChanged } from "firebase/auth";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilAlt, faCamera } from '@fortawesome/free-solid-svg-icons';
@@ -175,7 +174,7 @@ function Editprof() {
 
   return (
     <div>
-    <header style={{ fontSize: '24px', background:"#d4dcde", width:"100%"}}>プロフィール</header>
+    <header style={{ fontSize: '24px', background:"#d4dcde", width:"100%", textAlign:"center",height: "5%"}}>プロフィール</header>
     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
       <div className="user" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <h2 style={{ fontSize: '20px' }}>名前</h2>
@@ -184,9 +183,9 @@ function Editprof() {
           <FontAwesomeIcon icon={faPencilAlt} />名前を編集
         </button>
         <h2 style={{ fontSize: '20px', marginTop: '20px', marginBottom:'20px'}}>アイコン</h2>
-        <Avatar radius="xl" size="lg" color="blue" src={icon} style={{ width: '200px', height: '200px', border:"1px solid black"}} />
-        <button onClick={() => { setIsEditIconOpen(true) }}>
-          <FontAwesomeIcon icon={faCamera} style={{paddingTop:"20px"}}/>画像を編集
+        <Avatar radius="xl" size="lg" src={icon} style={{ width: '200px', height: '200px', border:"1px solid black"}} />
+        <button onClick={() => { setIsEditIconOpen(true) }} style={{ marginTop:"20px"}}>
+          <FontAwesomeIcon icon={faCamera} />画像を編集
         </button>
       </div>
       <Modal
